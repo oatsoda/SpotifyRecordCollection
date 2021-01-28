@@ -1,65 +1,72 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Axios from 'axios'
 import { processResponseAxios } from '../api/apiHelpers';
-import { SpotifyAuthDetails } from "./SpotifyAuth";
+import { SpotifyContext } from '../api/SpotifyContext';
+import { Alert } from "reactstrap";
 
-export function SpotifyAlbums(params: { authDetails: SpotifyAuthDetails }) {
+export function SpotifyAlbums() {
 
-    const { authDetails } = params;
+  const contextData = useContext(SpotifyContext);
 
-    let [recordCollection, setRecordCollection] = useState<RecordCollection>();
+  let [recordCollection, setRecordCollection] = useState<RecordCollection>();
+  const [errorMessage, setErrorMessage] = useState<string>();
 
-    useEffect(() => {
-      async function getAlbums() {
-  
-        // TODO: load all pages and show progress while doing so...
-        await Axios.get<GetAlbumsResponse>("https://api.spotify.com/v1/me/albums?offset=0&limit=50", {
-          headers: { 'Authorization': `Bearer ${authDetails.access_token}` }
-        })
-        .then(processResponseAxios)
-        .then(result => {
-          console.log(result);
-          setRecordCollection(parseResponse(result.data));
-        })
-        .catch(err => {
-          // Do somthing
-          console.log (err);
-          if (err.status === 400) {
-            //setErrorDetails(err.data);
-          }
-        });  
-      }
+  useEffect(() => {
+    async function getAlbums() {
 
-      getAlbums();
-    }, [authDetails]);
-
-    function renderArtists(byArtist: ByArtistCollection) {     
-      return Array.from(byArtist.keys()).sort((a1, a2) => a1 > a2 ? 0 : -1).map(a => {
-        const artist = byArtist.get(a)!;
-        return (<li key={artist.id}>{a} <a href={artist.external_urls.spotify} target="_blank" rel="noreferrer">^</a>{ renderArtistAlbums(artist) }</li>)        
+      // TODO: load all pages and show progress while doing so...
+      await Axios.get<GetAlbumsResponse>("https://api.spotify.com/v1/me/albums?offset=0&limit=50", {
+        headers: { 'Authorization': `Bearer ${contextData.authDetails?.access_token}` }
+      })
+      .then(processResponseAxios)
+      .then(result => {
+        console.log(result);
+        setRecordCollection(parseResponse(result.data));
+      })
+      .catch(err => {
+        // Do somthing
+        console.log (err);
+        if (err.status === 401) {
+          // TODO: Try to get new access token with refresh_token
+          contextData.authDetailsUpdated(undefined);
+        } else {
+          setErrorMessage(err.data)
+        }
       });
     }
 
-    function renderArtistAlbums(artist: ArtistCollection) {
-      return (<ul>
-        { artist.albums.sort((a1, a2) => a1.release_date > a2.release_date ? 0 : -1).map(a => (<li key={a.id}>{a.name} <a href={a.external_urls.spotify} target="_blank" rel="noreferrer">^</a></li>)) }
-      </ul>);
-    }
+    getAlbums();
+  }, [contextData, contextData.authDetails?.access_token]);
 
-    return (
-      <div>
-        <h2>Albums</h2>
-        { recordCollection &&
-          <>
-            <p>Total Albums: {recordCollection.allAlbums.length} | Total Artists: {recordCollection.byArtist.size}</p>
-            <ul>
-            { renderArtists(recordCollection.byArtist) }
-            </ul>
-          </>
-        }
-      </div>
-      
-    );
+  function renderArtists(byArtist: ByArtistCollection) {     
+    return Array.from(byArtist.keys()).sort((a1, a2) => a1 > a2 ? 0 : -1).map(a => {
+      const artist = byArtist.get(a)!;
+      return (<li key={artist.id}>{a} <a href={artist.external_urls.spotify} target="_blank" rel="noreferrer">^</a>{ renderArtistAlbums(artist) }</li>)        
+    });
+  }
+
+  function renderArtistAlbums(artist: ArtistCollection) {
+    return (<ul>
+      { artist.albums.sort((a1, a2) => a1.release_date > a2.release_date ? 0 : -1).map(a => (<li key={a.id}>{a.name} <a href={a.external_urls.spotify} target="_blank" rel="noreferrer">^</a></li>)) }
+    </ul>);
+  }
+
+  return (
+    <div>
+      <h2>Albums</h2>
+      { errorMessage && 
+        <Alert>{errorMessage}</Alert>
+      }
+      { recordCollection &&
+        <>
+          <p>Total Albums: {recordCollection.allAlbums.length} | Total Artists: {recordCollection.byArtist.size}</p>
+          <ul>
+          { renderArtists(recordCollection.byArtist) }
+          </ul>
+        </>
+      }
+    </div>   
+  );
 
 }
 
