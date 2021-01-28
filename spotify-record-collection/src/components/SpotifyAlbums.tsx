@@ -48,8 +48,7 @@ export function SpotifyAlbums(params: { authDetails: SpotifyAuthDetails }) {
 
     return (
       <div>
-        <h2>Albums</h2>        
-        <small>{authDetails.expires_in}</small> 
+        <h2>Albums</h2>
         { recordCollection &&
           <>
             <p>Total Albums: {recordCollection.allAlbums.length} | Total Artists: {recordCollection.byArtist.size}</p>
