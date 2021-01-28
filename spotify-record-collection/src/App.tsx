@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 import { SpotifyAuth } from './components/SpotifyAuth';
+import { SpotifyAlbums } from './components/SpotifyAlbums';
 
 function App() {
 
@@ -9,9 +10,12 @@ function App() {
   return (
     <div className="App">
       {token ? (
+        <div>
           <p>You are authorized with token: {token}</p>
+          <SpotifyAlbums token={token} />
+        </div>
       ) : (
-        <SpotifyAuth />
+        <SpotifyAuth onTokenUpdated={setToken} />
       )}
     </div>
   );

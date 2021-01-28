@@ -1,8 +1,7 @@
 import cryptoRandomString from 'crypto-random-string';
-import sha256 from 'crypto-js/sha256';
-import Base64 from 'crypto-js/enc-base64';
-import React, { useCallback, useEffect, useState } from 'react';
-import Axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
+import { useCallback, useEffect, useState } from 'react';
+import Axios, { AxiosRequestConfig } from 'axios';
+import { processResponseAxios } from '../api/apiHelpers';
 
 const codeVerifierLength = 128;
 const spotifyClientId = "078e53defda343c19205d805139575e0";
@@ -10,8 +9,9 @@ const callbackRedirect = "http://localhost:3000/";
 const scopes = "user-library-read";
 const exchangeCodeUrl = "https://accounts.spotify.com/api/token";
 
-function SpotifyAuth() {
+export function SpotifyAuth(params: { onTokenUpdated: (token: string) => void }) {
 
+  const { onTokenUpdated } = params;
   const urlParams = new URLSearchParams(window.parent.location.search);
   const code = urlParams.get('code');
   const state = urlParams.get('state');
@@ -41,6 +41,8 @@ function SpotifyAuth() {
       .then(result => {
         console.log(result);
         setAccessDetails(result.data);
+        if (onTokenUpdated)
+          onTokenUpdated(result.data.access_token);
       })
       .catch(err => {
         // Do somthing
@@ -48,7 +50,7 @@ function SpotifyAuth() {
         if (err.status === 400) {
           setErrorDetails(err.data);
         }
-      })
+      });
   }
 
   useEffect(() => {
@@ -78,7 +80,7 @@ function SpotifyAuth() {
     const codeVerifier = cryptoRandomString({length: codeVerifierLength});
     console.log(`New Code Verifier: ${codeVerifier}`);
     localStorage.setItem("authCodeVerifier", codeVerifier);
-    const codeChallenge = await pkce_challenge_from_verifier(codeVerifier); //encodeURIComponent(sha256(codeVerifier).toString(Base64));
+    const codeChallenge = await pkce_challenge_from_verifier(codeVerifier);
     console.log(`Code Challenge: ${codeChallenge}`);
     const sourceState = cryptoRandomString({length: 14, type: 'base64'});
     localStorage.setItem("authState", sourceState);
@@ -91,26 +93,28 @@ function SpotifyAuth() {
   }, []);
 
   return (    
-    <div>
-      <p><button onClick={onStartAuthenticate}>Authenticate</button></p>
+    <div>     
+      { accessDetails &&
+        <div>
+          <p>{accessDetails.access_token}</p>
+          <p>{accessDetails.expires_in}</p>
+          <p>{accessDetails.refresh_token}</p>
+          <p>{accessDetails.scope}</p>
+          <p>{accessDetails.token_type}</p>
+        </div>
+      }
+      { !accessDetails &&
+        <p><button onClick={onStartAuthenticate}>Authenticate</button></p>
+      }
 
-      <p>Login</p>
       <p>State: {state}</p>
       <p>Code: {code}</p>
       <p>Error: {error}</p>
-      { accessDetails &&
-      <div>
-        <p>{accessDetails.access_token}</p>
-        <p>{accessDetails.expires_in}</p>
-        <p>{accessDetails.refresh_token}</p>
-        <p>{accessDetails.scope}</p>
-        <p>{accessDetails.token_type}</p>
-      </div>
-      }
+ 
       { errorDetails &&
       <div>
-        <p>{errorDetails.error}</p>
-        <p>{errorDetails.error_description}</p>
+        <p>Exchange error: {errorDetails.error}</p>
+        <p>Exchange error_description: {errorDetails.error_description}</p>
       </div>
       }
     </div>
@@ -131,28 +135,7 @@ type PostExchangeError = {
   error_description: string,
 }
 
-export function processResponseAxios<T>(response: AxiosResponse<T>): Promise<ProcessedResponseOf<T>> {
 
-  return new Promise((resolve, reject) => {
-    // will resolve or reject depending on status, will pass both "status" and "data" in either case
-    let func: any;
-    console.log(`response status: ${response.status}`);
-    response.status < 400 ? func = resolve : func = reject;
-    func({ ok: response.status >= 200 && response.status < 300, status: response.status, data: response.data });
-  });
-}
-
-export interface ProcessedResponse {
-  ok: boolean, // Whether within 200 range (useful for resolved response which is in 100 or 300)
-  status: number;
-  data: any
-}
-
-export interface ProcessedResponseOf<T> {
-  ok: boolean, // Whether within 200 range (useful for resolved response which is in 100 or 300)
-  status: number;
-  data: T
-}
 
 function sha256_2(plain: string) { 
   // returns promise ArrayBuffer
@@ -175,5 +158,3 @@ async function pkce_challenge_from_verifier(v: string) : Promise<string> {
   const base64encoded = base64urlencode(hashed);
   return base64encoded;
 }
-
-export { SpotifyAuth };
