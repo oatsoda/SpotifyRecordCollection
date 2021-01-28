@@ -2,6 +2,7 @@ import cryptoRandomString from 'crypto-random-string';
 import { useCallback, useEffect, useState } from 'react';
 import Axios, { AxiosRequestConfig } from 'axios';
 import { processResponseAxios } from '../api/apiHelpers';
+import { useHistory } from 'react-router';
 
 const codeVerifierLength = 128;
 const spotifyClientId = "078e53defda343c19205d805139575e0";
@@ -9,15 +10,17 @@ const callbackRedirect = "http://localhost:3000/";
 const scopes = "user-library-read";
 const exchangeCodeUrl = "https://accounts.spotify.com/api/token";
 
-export function SpotifyAuth(params: { onTokenUpdated: (token: string) => void }) {
+export function SpotifyAuth(params: { onSuccessfulAuth: (token: SpotifyAuthDetails) => void }) {
 
-  const { onTokenUpdated } = params;
+  const history = useHistory();
+
+  const { onSuccessfulAuth } = params;
   const urlParams = new URLSearchParams(window.parent.location.search);
   const code = urlParams.get('code');
   const state = urlParams.get('state');
   const error = urlParams.get('error');
 
-  let [accessDetails, setAccessDetails] = useState<PostExchangeResponse>();
+  let [accessDetails, setAccessDetails] = useState<SpotifyAuthDetails>();
   let [errorDetails, setErrorDetails] = useState<PostExchangeError>();
 
   async function postExchangeCode(url: string, code: string, codeVerifier: string) {
@@ -36,13 +39,13 @@ export function SpotifyAuth(params: { onTokenUpdated: (token: string) => void })
       validateStatus: _ => true    
     }
   
-    await Axios.post<PostExchangeResponse>(url, params, config)
+    await Axios.post<SpotifyAuthDetails>(url, params, config)
       .then(processResponseAxios)
       .then(result => {
         console.log(result);
         setAccessDetails(result.data);
-        if (onTokenUpdated)
-          onTokenUpdated(result.data.access_token);
+        onSuccessfulAuth(result.data);
+        history.push('/');
       })
       .catch(err => {
         // Do somthing
@@ -122,7 +125,7 @@ export function SpotifyAuth(params: { onTokenUpdated: (token: string) => void })
 }
 
 
-type PostExchangeResponse = {
+export type SpotifyAuthDetails = {
   access_token: string,
   token_type: string,
   scope: string,

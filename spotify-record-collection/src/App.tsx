@@ -1,24 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './App.css';
-import { SpotifyAuth } from './components/SpotifyAuth';
-import { SpotifyAlbums } from './components/SpotifyAlbums';
+import { Route } from 'react-router';
+import { Layout } from './Layout';
+import { HomePage } from './components/HomePage';
 
 function App() {
-
-  let [token, setToken] = useState("");
-
   return (
-    <div className="App">
-      {token ? (
-        <div>
-          <p>You are authorized with token: {token}</p>
-          <SpotifyAlbums token={token} />
-        </div>
-      ) : (
-        <SpotifyAuth onTokenUpdated={setToken} />
-      )}
-    </div>
+    <Layout>
+      <Route exact path='/' component={HomePage} />
+    </Layout>
   );
 }
 
 export default App;
+

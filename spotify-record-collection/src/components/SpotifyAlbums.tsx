@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import Axios from 'axios'
 import { processResponseAxios } from '../api/apiHelpers';
+import { SpotifyAuthDetails } from "./SpotifyAuth";
 
-export function SpotifyAlbums(params: { token: string }) {
+export function SpotifyAlbums(params: { authDetails: SpotifyAuthDetails }) {
 
-    const { token } = params;
+    const { authDetails } = params;
 
     let [recordCollection, setRecordCollection] = useState<RecordCollection>();
 
@@ -13,7 +14,7 @@ export function SpotifyAlbums(params: { token: string }) {
   
         // TODO: load all pages and show progress while doing so...
         await Axios.get<GetAlbumsResponse>("https://api.spotify.com/v1/me/albums?offset=0&limit=50", {
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers: { 'Authorization': `Bearer ${authDetails.access_token}` }
         })
         .then(processResponseAxios)
         .then(result => {
@@ -30,7 +31,7 @@ export function SpotifyAlbums(params: { token: string }) {
       }
 
       getAlbums();
-    }, [token]);
+    }, [authDetails]);
 
     function renderArtists(byArtist: ByArtistCollection) {     
       return Array.from(byArtist.keys()).sort((a1, a2) => a1 > a2 ? 0 : -1).map(a => {
@@ -48,16 +49,17 @@ export function SpotifyAlbums(params: { token: string }) {
     return (
       <div>
         <h2>Albums</h2>        
+        <small>{authDetails.expires_in}</small> 
         { recordCollection &&
           <>
-            <p>Total Albums: {recordCollection.allAlbums.length}</p>
-            <p>Total Artists: {recordCollection.byArtist.size}</p>
+            <p>Total Albums: {recordCollection.allAlbums.length} | Total Artists: {recordCollection.byArtist.size}</p>
             <ul>
             { renderArtists(recordCollection.byArtist) }
             </ul>
           </>
         }
       </div>
+      
     );
 
 }
