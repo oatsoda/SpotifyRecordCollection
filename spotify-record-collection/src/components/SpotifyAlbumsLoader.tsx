@@ -76,9 +76,11 @@ export function SpotifyAlbumsLoader(props: { onLoadCompleted: (recordCollection:
   return (
     <>
       { errorMessage && 
-        <Alert>{errorMessage}</Alert>
+        <Loader isLoading={true} message={`Error: ${errorMessage}`} />
       }
-      <Loader isLoading={true} message={`Loaded ${progress.current} of ${progress.total} [${progress.percentage}%]`} />
+      { !errorMessage && 
+        <Loader isLoading={true} message={`Loaded ${progress.current} of ${progress.total} [${progress.percentage}%]`} />
+      }
     </>
   );
 }

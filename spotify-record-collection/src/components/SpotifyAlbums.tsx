@@ -1,4 +1,5 @@
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
+import { Button, UncontrolledCollapse, Card, CardBody } from "reactstrap";
 import { ArtistCollection, ByArtistCollection, RecordCollection } from "./recordCollectionTypes";
 import { SpotifyAlbumsLoader } from "./SpotifyAlbumsLoader";
 
@@ -13,7 +14,23 @@ export function SpotifyAlbums() {
   function renderArtists(byArtist: ByArtistCollection) {     
     return Array.from(byArtist.keys()).sort((a1, a2) => a1.toLowerCase() > a2.toLowerCase() ? 0 : -1).map(a => {
       const artist = byArtist.get(a)!;
-      return (<li key={artist.id}>{a} <a href={artist.external_urls.spotify} target="_blank" rel="noreferrer">^</a>{ renderArtistAlbums(artist) }</li>)        
+      return (
+        <div className="card" key={artist.id}>
+            <div className="card-header">
+              <h5 className="mb-0">
+                <button className="btn btn-link stretched-link" type="button" id={`tog${artist.id}`}>
+                  { artist.name }
+                </button>
+              </h5>
+            </div>
+
+            <UncontrolledCollapse toggler={`#tog${artist.id}`}>
+              <div className="card-body">
+                { renderArtistAlbums(artist) }
+              </div>
+            </UncontrolledCollapse>
+          </div>
+      );
     });
   }
 
@@ -32,9 +49,9 @@ export function SpotifyAlbums() {
       { recordCollection &&
         <>
           <p>Total Albums: {recordCollection.allAlbums.length} | Total Artists: {recordCollection.byArtist.size}</p>
-          <ul>
+          <div className="accordion" id="accordionExample">
           { renderArtists(recordCollection.byArtist) }
-          </ul>
+          </div>
         </>
       }
     </div>   
