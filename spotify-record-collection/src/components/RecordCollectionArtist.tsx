@@ -33,5 +33,3 @@ function RecordCollectionArtistAlbums(props: { artist: ArtistCollection; }){
     </>
   );
 }
-
-
