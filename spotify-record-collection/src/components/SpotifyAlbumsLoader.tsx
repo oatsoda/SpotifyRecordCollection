@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import Axios from 'axios'
-import { Alert } from "reactstrap";
 import { SpotifyContext } from "../api/SpotifyContext";
 import { processResponseAxios } from "../api/apiHelpers";
 import { Loader } from "./Loader";
@@ -21,20 +20,24 @@ export function SpotifyAlbumsLoader(props: { onLoadCompleted: (recordCollection:
     async function getAlbums(url: string, loadedAlbums: SpotifyAlbumObject[]) {
 
       await Axios.get<GetAlbumsResponse>(url, {
-        headers: { 'Authorization': `Bearer ${contextData.authDetails?.access_token}` }
+        headers: { 'Authorization': `Bearer ${contextData.authDetails?.access_token}` },
+        validateStatus: _ => true
       })
       .then(processResponseAxios)
-      .then(result => {
+      .then(async (result) => {
         console.log(result);
         loadedAlbums.push(...result.data.items.map(i => i.album))
         setProgress(parseProgress(result.data));
-        if (!result.data.next)
-          onLoadCompleted(parseRecordCollection(loadedAlbums));
-        else
-          getAlbums(result.data.next, loadedAlbums); // recurse
+        if (result.data.next)
+        {
+          await getAlbums(result.data.next, loadedAlbums); // recurse
+          return;
+        }
+        
+        onLoadCompleted(parseRecordCollection(loadedAlbums));
       })
       .catch(err => {
-        console.log (err);
+        console.log(err);
         if (err.status === 401) {
           // TODO: Try to get new access token with refresh_token
           contextData.authDetailsUpdated(undefined);
@@ -71,6 +74,7 @@ export function SpotifyAlbumsLoader(props: { onLoadCompleted: (recordCollection:
     }
 
     getAlbums("https://api.spotify.com/v1/me/albums?offset=0&limit=50", []);
+    return () => {}; // TODO: tidy up before unmount?    
   }, [contextData, contextData.authDetails?.access_token, onLoadCompleted]);
 
   return (

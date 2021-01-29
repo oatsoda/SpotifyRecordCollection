@@ -21,6 +21,7 @@ export function HomePage() {
   }, [authDetails]);
 
   const handleAuthDetailsUpdated = useCallback((details: SpotifyContextAuthDetails) => {
+    console.log(`Auth Changed: ${details?.access_token}`);
     setInStorage(details?.access_token); // In the case of clearing out the values, set storage before updating state so that useEffect doesn't pick up old value from storage again
     setAuthDetails(details);
   }, [])

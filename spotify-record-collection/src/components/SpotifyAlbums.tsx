@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Button, UncontrolledCollapse, Card, CardBody } from "reactstrap";
+import { UncontrolledCollapse } from "reactstrap";
 import { ArtistCollection, ByArtistCollection, RecordCollection } from "./recordCollectionTypes";
 import { SpotifyAlbumsLoader } from "./SpotifyAlbumsLoader";
 
@@ -16,20 +16,20 @@ export function SpotifyAlbums() {
       const artist = byArtist.get(a)!;
       return (
         <div className="card" key={artist.id}>
-            <div className="card-header">
-              <h5 className="mb-0">
-                <button className="btn btn-link stretched-link" type="button" id={`tog${artist.id}`}>
-                  { artist.name }
-                </button>
-              </h5>
-            </div>
-
-            <UncontrolledCollapse toggler={`#tog${artist.id}`}>
-              <div className="card-body">
-                { renderArtistAlbums(artist) }
-              </div>
-            </UncontrolledCollapse>
+          <div className="card-header d-flex justify-content-between align-items-center">
+            
+              <button className="btn btn-link stretched-link" type="button" id={`tog${artist.id}`}>
+                { artist.name }
+              </button>
+              <span className="badge badge-primary badge-pill">{ artist.albums.length }</span>
+            
           </div>
+          <UncontrolledCollapse toggler={`#tog${artist.id}`}>
+            <div className="card-body">
+              { renderArtistAlbums(artist) }
+            </div>
+          </UncontrolledCollapse>
+        </div>
       );
     });
   }
