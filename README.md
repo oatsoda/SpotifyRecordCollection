@@ -3,7 +3,7 @@
 TODO
 
 - Refresh Token
-- Store Access Token (not Refresh) so force reload at least works for 1 hour
+- Test 401 error works correctly
 - Load all albums - with progress bar
 - Expand/Contract albums
 - Show Album images (possible lazy load too?)
