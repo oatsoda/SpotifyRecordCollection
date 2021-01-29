@@ -3,6 +3,7 @@ import Axios from 'axios'
 import { processResponseAxios } from '../api/apiHelpers';
 import { SpotifyContext } from '../api/SpotifyContext';
 import { Alert } from "reactstrap";
+import { Loader } from "./Loader";
 
 export function SpotifyAlbums() {
 
