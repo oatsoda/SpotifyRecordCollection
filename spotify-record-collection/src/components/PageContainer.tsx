@@ -5,7 +5,7 @@ export function PageContainer(props: { children: React.ReactElement }) {
   return (
     <>
       <MenuBar />
-      <Container>
+      <Container fluid={true}>
         { props.children }
       </Container>
     </>
