@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from "react";
 import { UncontrolledCollapse } from "reactstrap";
 import { ArtistCollection, ByArtistCollection, RecordCollection } from "./recordCollectionTypes";
-import { SpotifyAlbumsLoader } from "./SpotifyAlbumsLoader";
+import { RecordCollectionLoader } from "./RecordCollectionLoader";
 
-export function SpotifyAlbums() {
+export function RecordCollectionDisplay() {
 
   let [recordCollection, setRecordCollection] = useState<RecordCollection>();
 
@@ -44,7 +44,7 @@ export function SpotifyAlbums() {
     <div>
       <h2>Albums</h2>
       { !recordCollection && 
-        <SpotifyAlbumsLoader onLoadCompleted={handleLoadCompleted} />
+        <RecordCollectionLoader onLoadCompleted={handleLoadCompleted} />
       }
       { recordCollection &&
         <>

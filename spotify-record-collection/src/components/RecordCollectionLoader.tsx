@@ -6,7 +6,7 @@ import { Loader } from "./Loader";
 import { GetAlbumsResponse, SpotifyAlbumObject } from "./spotifyApiTypes";
 import { ArtistCollection, ByArtistCollection, RecordCollection } from "./recordCollectionTypes";
 
-export function SpotifyAlbumsLoader(props: { onLoadCompleted: (recordCollection: RecordCollection) => void }) {
+export function RecordCollectionLoader(props: { onLoadCompleted: (recordCollection: RecordCollection) => void }) {
   
   const contextData = useContext(SpotifyContext);
 
