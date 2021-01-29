@@ -1,17 +1,13 @@
 import React from "react";
-import { Button, Card, CardHeader, UncontrolledCollapse } from "reactstrap";
+import { Button, Card, CardBody, CardHeader, UncontrolledCollapse } from "reactstrap";
 import { ArtistCollection } from "./recordCollectionTypes";
 import { RecordCollectionArtistBadge } from "./RecordCollectionArtistBadge";
+import { RecordCollectionAlbum } from "./RecordCollectionAlbum";
 
 
 export function RecordCollectionArtist(props: { artist: ArtistCollection; }) {
   const { artist } = props;
 
-  function renderArtistAlbums(artist: ArtistCollection) {
-    return (<ul>
-      {artist.albums.sort((a1, a2) => a1.release_date > a2.release_date ? 0 : -1).map(a => (<li key={a.id}>{a.name} <a href={a.external_urls.spotify} target="_blank" rel="noreferrer">^</a></li>))}
-    </ul>);
-  }
 
   return (
     <Card>
@@ -20,10 +16,22 @@ export function RecordCollectionArtist(props: { artist: ArtistCollection; }) {
         <RecordCollectionArtistBadge artist={artist} />
       </CardHeader>
       <UncontrolledCollapse toggler={`#tog${artist.id}`}>
-        <div className="card-body">
-          {renderArtistAlbums(artist)}
-        </div>
+        <CardBody>
+          <RecordCollectionArtistAlbums artist={artist} />  
+        </CardBody>
       </UncontrolledCollapse>
     </Card>
   );
 }
+
+function RecordCollectionArtistAlbums(props: { artist: ArtistCollection; }){
+  const albums = props.artist.albums.sort((a1, a2) => a1.release_date > a2.release_date ? 0 : -1);
+  
+  return (
+    <>
+      {albums.map(a => (<RecordCollectionAlbum album={a} key={a.id} />))}
+    </>
+  );
+}
+
+

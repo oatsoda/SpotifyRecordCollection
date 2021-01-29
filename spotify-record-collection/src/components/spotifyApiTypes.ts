@@ -21,7 +21,7 @@ export type SpotifyArtistObject = {
 export type SpotifyImageObject = {
   url: string,
   height: number,
-  widgth: number
+  width: number
 }
 
 export type SpotifyExternalUrlsObject = {

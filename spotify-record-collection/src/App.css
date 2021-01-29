@@ -14,3 +14,37 @@
 .spinners div {
   margin-left: 0.5em;
 }
+
+
+.alb {
+  float: left;
+  position: relative;
+  margin-right: 1.25em;
+  margin-bottom: 1.25em;
+}
+
+.alb .text {
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0;
+  font-size: 2em;
+  background-color: black;
+  color: white;
+}
+
+.alb img,
+.alb .text {
+  transition: opacity 0.4s ease-in-out;
+}
+
+.alb .text {
+  position:absolute; 
+  top:0; 
+  left:0; 
+  opacity:0;
+}
+
+.alb:hover img {opacity:0.6;}
+.alb:hover .text {opacity:0.6;}
