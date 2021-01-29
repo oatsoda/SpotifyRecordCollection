@@ -1,46 +1,17 @@
-import { useContext, useEffect, useState } from "react";
-import Axios from 'axios'
-import { processResponseAxios } from '../api/apiHelpers';
-import { SpotifyContext } from '../api/SpotifyContext';
-import { Alert } from "reactstrap";
-import { Loader } from "./Loader";
+import { useCallback, useState } from "react";
+import { ArtistCollection, ByArtistCollection, RecordCollection } from "./recordCollectionTypes";
+import { SpotifyAlbumsLoader } from "./SpotifyAlbumsLoader";
 
 export function SpotifyAlbums() {
 
-  const contextData = useContext(SpotifyContext);
-
   let [recordCollection, setRecordCollection] = useState<RecordCollection>();
-  const [errorMessage, setErrorMessage] = useState<string>();
 
-  useEffect(() => {
-    async function getAlbums() {
-
-      // TODO: load all pages and show progress while doing so...
-      await Axios.get<GetAlbumsResponse>("https://api.spotify.com/v1/me/albums?offset=0&limit=50", {
-        headers: { 'Authorization': `Bearer ${contextData.authDetails?.access_token}` }
-      })
-      .then(processResponseAxios)
-      .then(result => {
-        console.log(result);
-        setRecordCollection(parseResponse(result.data));
-      })
-      .catch(err => {
-        // Do somthing
-        console.log (err);
-        if (err.status === 401) {
-          // TODO: Try to get new access token with refresh_token
-          contextData.authDetailsUpdated(undefined);
-        } else {
-          setErrorMessage(err.data)
-        }
-      });
-    }
-
-    getAlbums();
-  }, [contextData, contextData.authDetails?.access_token]);
+  const handleLoadCompleted = useCallback((loadedCollection: RecordCollection) => {
+    setRecordCollection(loadedCollection);
+  }, []);
 
   function renderArtists(byArtist: ByArtistCollection) {     
-    return Array.from(byArtist.keys()).sort((a1, a2) => a1 > a2 ? 0 : -1).map(a => {
+    return Array.from(byArtist.keys()).sort((a1, a2) => a1.toLowerCase() > a2.toLowerCase() ? 0 : -1).map(a => {
       const artist = byArtist.get(a)!;
       return (<li key={artist.id}>{a} <a href={artist.external_urls.spotify} target="_blank" rel="noreferrer">^</a>{ renderArtistAlbums(artist) }</li>)        
     });
@@ -55,8 +26,8 @@ export function SpotifyAlbums() {
   return (
     <div>
       <h2>Albums</h2>
-      { errorMessage && 
-        <Alert>{errorMessage}</Alert>
+      { !recordCollection && 
+        <SpotifyAlbumsLoader onLoadCompleted={handleLoadCompleted} />
       }
       { recordCollection &&
         <>
@@ -68,77 +39,4 @@ export function SpotifyAlbums() {
       }
     </div>   
   );
-
-}
-
-type GetAlbumsResponse = {
-  limit : number,
-  next : string,
-  offset : number,
-  previous : string,
-  total : number
-  items: GetAlbumsResponseItem[]
-}
-type GetAlbumsResponseItem = {
-  album : SpotifyAlbumObject
-}
-
-type SpotifyAlbumObject = {
-  album_type: "album" | "single" | "compilation",
-  id: string,
-  href: string,
-  external_urls: SpotifyExternalUrlsObject,
-  name: string,
-  release_date: Date,
-  images: SpotifyImageObject[],
-  artists: SpotifyArtistObject[]
-}
-
-type SpotifyArtistObject = {
-  name: string,
-  id: string,
-  href: string,
-  external_urls: SpotifyExternalUrlsObject
-}
-
-type SpotifyImageObject = {
-  url: string,
-  height: number,
-  widgth: number
-}
-
-type SpotifyExternalUrlsObject = {
-  spotify: string
-}
-
-type RecordCollection = {
-  allAlbums: SpotifyAlbumObject[],
-  byArtist: ByArtistCollection
-}
-
-type ArtistCollection = SpotifyArtistObject & {
-  albums: SpotifyAlbumObject[]
-}
-
-type ByArtistCollection = Map<string, ArtistCollection>;
-
-function parseResponse(response: GetAlbumsResponse) : RecordCollection {
-  const allAlbums = response.items.map(i => i.album);
-  return {
-    allAlbums: allAlbums,
-    byArtist: parseArtists(allAlbums)
-  }
-}
-
-function parseArtists(allAlbums: SpotifyAlbumObject[]) : ByArtistCollection {
-  let artists = new Map<string, ArtistCollection>();
-  allAlbums.forEach(album => {
-    album.artists.forEach(artist => {
-      if (!artists.has(artist.name)){
-        artists.set(artist.name, { ...artist, albums: [] });
-      }
-      artists.get(artist.name)?.albums.push(album);      
-    });    
-  });
-  return artists;
 }

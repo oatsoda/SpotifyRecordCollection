@@ -1,7 +1,7 @@
 import { Spinner } from 'reactstrap';
 
-export function Loader(props: { isLoading: boolean }) {
-  const { isLoading } = props;
+export function Loader(props: { isLoading: boolean, message?: string }) {
+  const { isLoading, message } = props;
 
   return (
     <>
@@ -11,6 +11,9 @@ export function Loader(props: { isLoading: boolean }) {
             <Spinner color="success" />
             <Spinner color="danger" >Loading</Spinner>
             <Spinner color="warning" />
+            { message && 
+            <p>{message}</p>
+            }
           </div>
         </div>
       }
