@@ -4,7 +4,7 @@ import { Alert } from "reactstrap";
 import { SpotifyContext } from "../api/SpotifyContext";
 import { processResponseAxios } from "../api/apiHelpers";
 import { Loader } from "./Loader";
-import { GetAlbumsResponse, GetAlbumsResponseItem, SpotifyAlbumObject } from "./spotifyApiTypes";
+import { GetAlbumsResponse, SpotifyAlbumObject } from "./spotifyApiTypes";
 import { ArtistCollection, ByArtistCollection, RecordCollection } from "./recordCollectionTypes";
 
 export function SpotifyAlbumsLoader(props: { onLoadCompleted: (recordCollection: RecordCollection) => void }) {
