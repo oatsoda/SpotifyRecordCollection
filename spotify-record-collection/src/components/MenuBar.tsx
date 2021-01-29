@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Collapse, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 
 export function MenuBar() {
@@ -9,12 +10,12 @@ export function MenuBar() {
   
     return (
       <Navbar color="dark" dark expand="md" className="mb-3">
-        <NavbarBrand href="/">Spotify Record Collection</NavbarBrand>
+        <NavbarBrand tag={Link} to="/">Spotify Record Collection</NavbarBrand>
         <NavbarToggler onClick={toggleNavbar} className="mr-2" />
         <Collapse isOpen={!collapsed} navbar>
           <Nav className="mr-auto" navbar>
             <NavItem>
-              <NavLink href="/">Create</NavLink>
+              <NavLink tag={Link} to="/">Create</NavLink>
             </NavItem>            
           </Nav>
         </Collapse>

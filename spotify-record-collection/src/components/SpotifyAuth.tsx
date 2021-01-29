@@ -12,6 +12,9 @@ const callbackRedirect = "http://localhost:3000/";
 const scopes = "user-library-read";
 const exchangeCodeUrl = "https://accounts.spotify.com/api/token";
 
+const authCodeVerifierStorageKey = "authCodeVerifier";
+const authStateStorageKey = "authState";
+
 export function SpotifyAuth() {
 
   const history = useHistory();
@@ -34,7 +37,7 @@ export function SpotifyAuth() {
     if (code == null)
       return;
 
-    const sourceState = localStorage.getItem("authState");
+    const sourceState = localStorage.getItem(authStateStorageKey);
     if (state !== sourceState) {
       setErrorMessage("Invalid state: The state returned from the OAuth request did not match the state value sent with the initial request.");        
       return;
@@ -51,9 +54,14 @@ export function SpotifyAuth() {
       }
     }
 
-    // Post exchange of code for Access Token
-    const codeVerifier = localStorage.getItem("authCodeVerifier")!;
-    //console.log(`Local Code Verifier: ${codeVerifier}`);
+    // Get code used in initial request
+    const codeVerifier = localStorage.getItem(authCodeVerifierStorageKey)!;
+
+    // Clear storage as we've used them now    
+    localStorage.removeItem(authCodeVerifierStorageKey);
+    localStorage.removeItem(authStateStorageKey);
+
+    // Exchange code for Access Token
     postExchangeCode(exchangeCodeUrl, code, codeVerifier, success, failure); 
 
   }, [code, state, error, setErrorMessage, contextData, history]);
@@ -61,12 +69,10 @@ export function SpotifyAuth() {
   const onStartAuthenticate = useCallback(async () => {
 
     const codeVerifier = cryptoRandomString({length: codeVerifierLength});
-    //console.log(`New Code Verifier: ${codeVerifier}`);
-    localStorage.setItem("authCodeVerifier", codeVerifier);
+    localStorage.setItem(authCodeVerifierStorageKey, codeVerifier);
     const codeChallenge = await pkce_challenge_from_verifier(codeVerifier);
-    //console.log(`Code Challenge: ${codeChallenge}`);
     const sourceState = cryptoRandomString({length: 14, type: 'base64'});
-    localStorage.setItem("authState", sourceState);
+    localStorage.setItem(authStateStorageKey, sourceState);
 
     const startAuthUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${spotifyClientId}&redirect_uri=${encodeURIComponent(callbackRedirect)}&state=${sourceState}&code_challenge=${codeChallenge}&code_challenge_method=S256&scope=${scopes}`;
 
