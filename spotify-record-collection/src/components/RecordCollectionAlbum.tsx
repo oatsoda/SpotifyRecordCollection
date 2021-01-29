@@ -1,4 +1,3 @@
-import React from "react";
 import { SpotifyAlbumObject } from "./spotifyApiTypes";
 
 
@@ -9,7 +8,7 @@ export function RecordCollectionAlbum(props: { album: SpotifyAlbumObject; }) {
   return (
     <div className="alb" style={{width: width, height: width}}>      
       <img src={image.url} width={width} alt={album.name} />
-      <div className="text"><a href={album.external_urls.spotify} rel="noreferrer" target="_blank">{album.name}</a></div>
+      <a href={album.external_urls.spotify} rel="noreferrer" target="_blank" className="hov">{album.name}</a>
     </div>
   );
 }

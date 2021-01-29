@@ -11,8 +11,8 @@ export function RecordCollectionArtist(props: { artist: ArtistCollection; }) {
 
   return (
     <Card>
-      <CardHeader className="d-flex justify-content-between align-items-center">
-        <Button color="link" id={`tog${artist.id}`}>{artist.name}</Button>
+      <CardHeader className="d-flex justify-content-between align-items-center position-relative">
+        <Button color="link" id={`tog${artist.id}`} className="stretched-link">{artist.name}</Button>
         <RecordCollectionArtistBadge artist={artist} />
       </CardHeader>
       <UncontrolledCollapse toggler={`#tog${artist.id}`}>
