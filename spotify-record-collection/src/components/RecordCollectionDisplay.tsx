@@ -12,12 +12,16 @@ export function RecordCollectionDisplay() {
   }, []);
 
   function renderArtists(byArtist: ByArtistCollection) {     
-    return Array.from(byArtist.keys()).sort((a1, a2) => a1.toLowerCase() > a2.toLowerCase() ? 0 : -1).map(a => {
+    return Array.from(byArtist.keys()).sort((a1, a2) => normaliseArtist(a1) > normaliseArtist(a2) ? 0 : -1).map(a => {
       const artist = byArtist.get(a)!;
       return (<RecordCollectionArtist artist={artist}  key={artist.id} />);
     });
   }
 
+  function normaliseArtist(artist: string) {
+    const re = /^the\s/i;
+    return artist.toLowerCase().replace(re, '');
+  }
 
   return (
     <div>
