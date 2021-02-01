@@ -1,19 +1,21 @@
 import cryptoRandomString from 'crypto-random-string';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import Axios, { AxiosRequestConfig } from 'axios';
 import { ProcessedResponse, processResponseAxios } from '../api/apiHelpers';
 import { useHistory } from 'react-router';
 import { SpotifyContext } from '../api/SpotifyContext';
-import { Alert } from 'reactstrap';
+import { Alert, Button, Col, Container, Row } from 'reactstrap';
+import { PageContainer } from './PageContainer';
 
 const codeVerifierLength = 128;
 const spotifyClientId = "078e53defda343c19205d805139575e0";
-const callbackRedirect = "http://localhost:3000/";
 const scopes = "user-library-read";
 const exchangeCodeUrl = "https://accounts.spotify.com/api/token";
 
 const authCodeVerifierStorageKey = "authCodeVerifier";
 const authStateStorageKey = "authState";
+
+const callbackRedirect = window.location.origin + '/';
 
 export function SpotifyAuth() {
 
@@ -44,7 +46,7 @@ export function SpotifyAuth() {
     }
 
     function success(data: SpotifyAuthDetails) {
-      contextData.authDetailsUpdated(data);
+      contextData.authDetailsUpdated(data);      
       history.push('/');
     }
 
@@ -82,14 +84,20 @@ export function SpotifyAuth() {
   }, []);
 
   return (    
-      <>
-        { errorMessage && 
-          <Alert>{errorMessage}</Alert>
-        }
-        { !errorMessage && !code &&          
-          <p><button onClick={onStartAuthenticate}>Authenticate</button></p>
-        }
-      </>
+      <PageContainer>
+        <Container>
+          <Row className="justify-content-center">
+            <Col md={6} className="bg-dark rounded text-center p-3">
+            { errorMessage && 
+              <Alert color="danger">Failed to authenticate: {errorMessage}</Alert>
+            }
+            { !code &&          
+              <Button className="bg-spotify border-0 p-2 px-3" onClick={onStartAuthenticate}><img className="float-left" src="/img/Spotify_Icon_RGB_Black.png" alt="Spotify Logo" /> Authenticate with Spotify</Button>
+            }
+            </Col>
+          </Row>
+        </Container>
+      </PageContainer>
   )
 }
 
