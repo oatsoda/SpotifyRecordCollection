@@ -1,7 +1,7 @@
 import { Container } from 'reactstrap';
 import { MenuBar } from "./MenuBar";
 
-export function PageContainer(props: { children?: any }) {
+export function PageContainer(props: { children?: React.ReactNode }) {
   return (
     <>
       <MenuBar />
