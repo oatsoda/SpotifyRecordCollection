@@ -232,4 +232,7 @@ _Pvt_Extensions
 .fake/
 
 
+.eslintcache
+*.eslintcache
 **/*.eslintcache
+spotify-record-collection/.eslintcache

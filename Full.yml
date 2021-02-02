@@ -1,0 +1,124 @@
+name: 1.0$(rev:.r)
+
+# change back to "trigger: none" when not doing Cont Deploy
+trigger: 
+  branches: 
+    include:
+    - main
+  paths:
+    exclude:
+    - .gitignore
+    - CI.yaml
+    - README.md
+
+# no PR triggers
+pr: none
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  clientAppPath: 'spotify-record-collection'
+
+stages:
+- stage: Build
+  displayName: Build
+  jobs:
+  - job: BuildClient
+    steps:
+    - task: NodeTool@0
+      displayName: 'Ensure Node Installed'
+      inputs:
+        versionSpec: '12.x'
+    - task: Npm@1
+      displayName: 'Install ClientApp packages'
+      inputs:
+        command: 'install'
+        workingDir: $(clientAppPath)        
+    - task: Npm@1
+      displayName: 'Build ClientApp'
+      inputs:
+        command: 'custom'
+        workingDir: $(clientAppPath)
+        customCommand: 'run build'  
+    - task: PublishBuildArtifacts@1
+      displayName: 'Upload ClientApp'
+      inputs:
+        PathtoPublish: '$(Build.SourcesDirectory)/$(clientAppPath)/build/'
+        ArtifactName: 'ClientApp'
+        publishLocation: 'Container'
+    - task: PublishBuildArtifacts@1
+      displayName: 'Upload Deployment'
+      inputs:
+        PathtoPublish: '$(Build.SourcesDirectory)/SpotifyRecordCollection.Deployment'
+        ArtifactName: 'Deployment'
+        publishLocation: 'Container'
+
+- stage: DeployInfrastructure
+  displayName: Deploy Infrastructure
+  jobs:
+    # Track deployments on the environment.
+  - deployment: DeployInfrastructure
+    displayName: Deploy Infrastructure
+        
+    condition: and(succeeded(), ne(variables['skipInfrastructure'], 'true'))
+
+    # Creates an environment if it doesn't exist.
+    environment: 'Live'
+    strategy:
+      # Default deployment strategy, more coming...
+      runOnce:
+        deploy:
+          steps:
+          - checkout: none
+          - download: none
+
+          - task: DownloadBuildArtifacts@0
+            displayName: 'Download Deployment'
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'Deployment'
+              downloadPath: '$(System.ArtifactsDirectory)'
+              
+          - task: AzureResourceManagerTemplateDeployment@3
+            displayName: 'Deploy Storage Account'
+            inputs:
+              deploymentScope: 'Resource Group'
+              azureResourceManagerConnection: 'LiveSpotifyRecordCollection'
+              subscriptionId: 'f2eec27e-505b-41ff-87a8-b38999936e14'
+              action: 'Create Or Update Resource Group'
+              resourceGroupName: 'LiveSpotifyRecordCollection'
+              location: 'UK South'
+              templateLocation: 'Linked artifact'
+              csmFile: '$(System.ArtifactsDirectory)\Deployment\Templates\Storage.Template.json'
+              csmParametersFile: '$(System.ArtifactsDirectory)\Deployment\Storage.Live.json'
+              deploymentMode: 'Incremental'
+
+- stage: DeployWeb
+  displayName: Deploy Web App
+  jobs:
+
+    # Track deployments on the environment.
+  - deployment: DeployWeb
+    displayName: Deploy Web App
+    # Creates an environment if it doesn't exist.
+    environment: 'Live'
+    strategy:
+      # Default deployment strategy, more coming...
+      runOnce:
+        deploy:
+          steps:
+          - checkout: none 
+          - download: none
+
+          - task: DownloadBuildArtifacts@0
+            displayName: 'Download ClientApp'
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'ClientApp'
+              downloadPath: '$(System.ArtifactsDirectory)'
+              
+
+           # TODO: Upload to storage $web 
