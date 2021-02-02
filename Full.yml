@@ -19,8 +19,7 @@ pool:
 
 variables:
   clientAppPath: 'spotify-record-collection'
-  version: $(Build.BuildNumber)
-
+  
 stages:
 - stage: Build
   displayName: Build
@@ -35,7 +34,15 @@ stages:
       displayName: 'Install ClientApp packages'
       inputs:
         command: 'install'
-        workingDir: $(clientAppPath)        
+        workingDir: $(clientAppPath)
+    - task: PowerShell@2
+      displayName: 'Update package.json version'
+      inputs:
+        filePath: 'SetPackageVersion.ps1'
+        arguments: '-filePath .\package.json -version $(Build.BuildNumber)'
+        failOnStderr: true
+        showWarnings: true
+        pwsh: true
     - task: Npm@1
       displayName: 'Build ClientApp'
       inputs:
