@@ -85,7 +85,7 @@ stages:
             displayName: 'Deploy Storage Account'
             inputs:
               deploymentScope: 'Resource Group'
-              azureResourceManagerConnection: 'LiveSpotifyRecordCollection'
+              azureResourceManagerConnection: 'Pay-As-You-Go(f2eec27e-505b-41ff-87a8-b38999936e14)'
               subscriptionId: 'f2eec27e-505b-41ff-87a8-b38999936e14'
               action: 'Create Or Update Resource Group'
               resourceGroupName: 'LiveSpotifyRecordCollection'
