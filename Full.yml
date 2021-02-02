@@ -91,8 +91,8 @@ stages:
               resourceGroupName: 'LiveSpotifyRecordCollection'
               location: 'UK South'
               templateLocation: 'Linked artifact'
-              csmFile: '$(System.ArtifactsDirectory)\Deployment\Templates\Storage.Template.json'
-              csmParametersFile: '$(System.ArtifactsDirectory)\Deployment\Storage.Live.json'
+              csmFile: '$(System.ArtifactsDirectory)\Deployment\Templates\StorageAccount.Template.json'
+              csmParametersFile: '$(System.ArtifactsDirectory)\Deployment\StorageAccount.Live.json'
               deploymentMode: 'Incremental'
 
 - stage: DeployWeb
