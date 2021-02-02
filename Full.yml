@@ -119,6 +119,11 @@ stages:
               downloadType: 'single'
               artifactName: 'ClientApp'
               downloadPath: '$(System.ArtifactsDirectory)'
-              
 
-           # TODO: Upload to storage $web 
+          - task: AzureFileCopy@4
+            inputs:
+              SourcePath: '$(System.ArtifactsDirectory)/ClientApp'
+              azureSubscription: 'Pay-As-You-Go(f2eec27e-505b-41ff-87a8-b38999936e14)'
+              Destination: 'AzureBlob'
+              storage: 'livespotifyrecordcoll'
+              ContainerName: '$web'
