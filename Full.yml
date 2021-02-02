@@ -38,7 +38,7 @@ stages:
     - task: PowerShell@2
       displayName: 'Update package.json version'
       inputs:
-        filePath: 'SetPackageVersion.ps1'
+        filePath: '$(Build.SourcesDirectory)/$(clientAppPath)/SetPackageVersion.ps1'
         arguments: '-filePath $(Build.SourcesDirectory)/$(clientAppPath)/package.json -version $(Build.BuildNumber)'
         failOnStderr: true
         showWarnings: true
