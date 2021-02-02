@@ -19,6 +19,7 @@ pool:
 
 variables:
   clientAppPath: 'spotify-record-collection'
+  version: $(Build.BuildNumber)
 
 stages:
 - stage: Build
@@ -120,9 +121,10 @@ stages:
               artifactName: 'ClientApp'
               downloadPath: '$(System.ArtifactsDirectory)'
 
+          # Remember to add Storage Blob Data Contributor/Owner role to the Service Principal in Azure Portal (Subscriptions > Access Control)
           - task: AzureFileCopy@4
             inputs:
-              SourcePath: '$(System.ArtifactsDirectory)/ClientApp'
+              SourcePath: '$(System.ArtifactsDirectory)/ClientApp/*' # *ensures parent ClientApp folder not copied.
               azureSubscription: 'Pay-As-You-Go(f2eec27e-505b-41ff-87a8-b38999936e14)'
               Destination: 'AzureBlob'
               storage: 'livespotifyrecordcoll'
