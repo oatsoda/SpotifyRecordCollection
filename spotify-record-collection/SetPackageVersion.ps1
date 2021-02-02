@@ -8,6 +8,6 @@ param(
     $version
 )
 
-$packageJsonContent = (Get-Content $path | ConvertFrom-Json);
+$packageJsonContent = (Get-Content $filePath | ConvertFrom-Json);
 $packageJsonContent.version = $version;
-ConvertTo-Json $packageJsonContent | Set-Content -Path $path 
+ConvertTo-Json $packageJsonContent | Set-Content -Path $filePath 
