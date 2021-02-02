@@ -19,7 +19,7 @@ pool:
 
 variables:
   clientAppPath: 'spotify-record-collection'
-  
+
 stages:
 - stage: Build
   displayName: Build
@@ -39,7 +39,7 @@ stages:
       displayName: 'Update package.json version'
       inputs:
         filePath: 'SetPackageVersion.ps1'
-        arguments: '-filePath .\package.json -version $(Build.BuildNumber)'
+        arguments: '-filePath $(Build.SourcesDirectory)/$(clientAppPath)/package.json -version $(Build.BuildNumber)'
         failOnStderr: true
         showWarnings: true
         pwsh: true
