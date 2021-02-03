@@ -4,7 +4,6 @@ import { ArtistCollection } from "./recordCollectionTypes";
 import { RecordCollectionArtistBadge } from "./RecordCollectionArtistBadge";
 import { RecordCollectionAlbum } from "./RecordCollectionAlbum";
 
-
 export function RecordCollectionArtist(props: { artist: ArtistCollection; }) {
   const { artist } = props;
 
@@ -20,6 +19,7 @@ export function RecordCollectionArtist(props: { artist: ArtistCollection; }) {
           <div className="d-flex flex-row flex-wrap">
             <RecordCollectionArtistAlbums artist={artist} />  
           </div>
+          <div className="bg" style={ { backgroundImage: "url('./img/Spotify_Icon_RGB_Green.png')" } }></div>
         </CardBody>
       </UncontrolledCollapse>
     </Card>
