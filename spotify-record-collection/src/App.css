@@ -1,7 +1,6 @@
 .loading {
   position: fixed;
-  background-color: rgba(255, 255, 255, 0.9);
-  /*dim the background*/
+  background-color: rgba(0, 0, 0, 0.7);
   top:0;
   left:0;
   width:100%;
@@ -9,6 +8,10 @@
   color:black;
   text-align: center;
   z-index: 9999;
+}
+
+.loading p {
+  color: #fff;
 }
 
 .spinners div {
@@ -19,7 +22,6 @@ html body {
   background-color: #191414;
   color: #fff;
 }
-
 
 html .border-darker {  
   border-color: #333 !important;
