@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { SpotifyAuth, SpotifyAuthDetails } from './SpotifyAuth';
 import { RecordCollectionDisplay } from './RecordCollectionDisplay';
-import { PageContainer } from './PageContainer';
 import { SpotifyContext, SpotifyContextAuthDetails } from '../api/SpotifyContext';
+import { MenuBar } from './MenuBar';
 
 export function HomePage() {
 
@@ -36,10 +36,9 @@ export function HomePage() {
 
   return (
     <SpotifyContext.Provider value={ { authDetails: authDetails, authDetailsUpdated: handleAuthDetailsUpdated } }>
+      <MenuBar />
       { authDetails &&
-        <PageContainer>
-          <RecordCollectionDisplay />
-        </PageContainer>
+        <RecordCollectionDisplay />
       }
       { !authDetails &&
         <SpotifyAuth />

@@ -6,7 +6,7 @@ export function Layout(props: { children: React.ReactNode }) {
 
   return (
     <div className="d-flex flex-column min-vh-100">
-      <main className="flex-fill">
+      <main className="flex-fill">        
         <Container fluid={true} className="p-0">
           {props.children}
         </Container>
