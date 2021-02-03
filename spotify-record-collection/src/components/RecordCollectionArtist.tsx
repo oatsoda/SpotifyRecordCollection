@@ -10,14 +10,16 @@ export function RecordCollectionArtist(props: { artist: ArtistCollection; }) {
 
 
   return (
-    <Card>
-      <CardHeader className="d-flex justify-content-between align-items-center position-relative">
+    <Card className="bg-transparent border-darker">
+      <CardHeader className="d-flex justify-content-between align-items-center position-relative">        
         <Button color="link" id={`tog${artist.id}`} className="stretched-link">{artist.name}</Button>
         <RecordCollectionArtistBadge artist={artist} />
       </CardHeader>
       <UncontrolledCollapse toggler={`#tog${artist.id}`}>
-        <CardBody>
-          <RecordCollectionArtistAlbums artist={artist} />  
+        <CardBody className="pr-0">
+          <div className="d-flex flex-row flex-wrap">
+            <RecordCollectionArtistAlbums artist={artist} />  
+          </div>
         </CardBody>
       </UncontrolledCollapse>
     </Card>

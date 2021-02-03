@@ -16,7 +16,7 @@ export function MenuBar() {
   }, [contextData])
 
   return (
-    <Navbar color="dark" dark expand="md" className="mb-3">
+    <Navbar dark expand="md" className="bg-spotify mb-3">
       <NavbarBrand tag={Link} to="/">Spotify Record Collection</NavbarBrand>
       <NavbarToggler onClick={toggleNavbar} className="mr-2" />
       <Collapse isOpen={!collapsed} navbar>

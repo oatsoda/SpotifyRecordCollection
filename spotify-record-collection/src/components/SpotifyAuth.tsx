@@ -87,7 +87,8 @@ export function SpotifyAuth() {
       <PageContainer>
         <Container>
           <Row className="justify-content-center">
-            <Col md={6} className="bg-dark rounded text-center p-3">
+            <Col md={6} className="border border-darker rounded text-center p-3">
+              <p>You need to login to your Spotify account and give permission for us to read your Library.</p>
             { errorMessage && 
               <Alert color="danger">Failed to authenticate: {errorMessage}</Alert>
             }

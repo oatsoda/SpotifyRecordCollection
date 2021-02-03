@@ -26,14 +26,13 @@ export function RecordCollectionDisplay() {
 
   return (
     <Container>
-      <h2>Albums</h2>
       { !recordCollection && 
         <RecordCollectionLoader onLoadCompleted={handleLoadCompleted} />
       }
       { recordCollection &&
         <>
           <p>Total Items: {recordCollection.allAlbums.length} | Total Artists: {recordCollection.byArtist.size}</p>
-          <div className="accordion" id="accordionExample">
+          <div className="accordion coll">
           { renderArtists(recordCollection.byArtist) }
           </div>
         </>
