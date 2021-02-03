@@ -28,6 +28,16 @@ export type SpotifyExternalUrlsObject = {
   spotify: string
 }
 
+
+export type SpotifyUserObject = {
+  display_name: string,
+  external_urls: SpotifyExternalUrlsObject,
+  followers: {
+    total: number
+  }
+}
+
+
 /* Responses */
 
 export type GetAlbumsResponse = {
