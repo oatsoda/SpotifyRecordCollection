@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react";
 import { ByArtistCollection, RecordCollection } from "./recordCollectionTypes";
 import { RecordCollectionLoader } from "./RecordCollectionLoader";
 import { RecordCollectionArtist } from "./RecordCollectionArtist";
+import { Container } from "reactstrap";
 
 export function RecordCollectionDisplay() {
 
@@ -24,7 +25,7 @@ export function RecordCollectionDisplay() {
   }
 
   return (
-    <div>
+    <Container>
       <h2>Albums</h2>
       { !recordCollection && 
         <RecordCollectionLoader onLoadCompleted={handleLoadCompleted} />
@@ -37,7 +38,7 @@ export function RecordCollectionDisplay() {
           </div>
         </>
       }
-    </div>   
+      </Container> 
   );
 }
 
