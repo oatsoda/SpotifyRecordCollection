@@ -7,3 +7,4 @@ TODO
 - Display more info, like Label, Release Date etc.
 - Add progress bar to loader
 - Lazy load images?
+- Responsive album image sizes: make smaller on smaller devices

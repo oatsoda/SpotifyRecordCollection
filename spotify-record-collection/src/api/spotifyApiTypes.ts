@@ -8,10 +8,10 @@ export type SpotifyAlbumObject = {
   name: string,
   release_date: Date,
   images: SpotifyImageObject[],
-  artists: SpotifyArtistObject[]
+  artists: SpotifyAlbumArtistObject[]
 }
 
-export type SpotifyArtistObject = {
+export type SpotifyAlbumArtistObject = {
   name: string,
   id: string,
   href: string,
@@ -32,9 +32,18 @@ export type SpotifyExternalUrlsObject = {
 export type SpotifyUserObject = {
   display_name: string,
   external_urls: SpotifyExternalUrlsObject,
-  followers: {
-    total: number
-  }
+  followers: SpotifyFollowersObject
+}
+
+export type SpotifyArtistObject = SpotifyAlbumArtistObject & {
+  followers: SpotifyFollowersObject,
+  genres: string[],
+  images: SpotifyImageObject[],
+  popularity: number
+}
+
+export type SpotifyFollowersObject = {
+  total: number
 }
 
 

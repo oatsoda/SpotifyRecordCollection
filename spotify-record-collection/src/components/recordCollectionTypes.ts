@@ -1,11 +1,11 @@
-import { SpotifyAlbumObject, SpotifyArtistObject } from "../api/spotifyApiTypes";
+import { SpotifyAlbumObject, SpotifyAlbumArtistObject } from "../api/spotifyApiTypes";
 
 export type RecordCollection = {
   allAlbums: SpotifyAlbumObject[],
   byArtist: ByArtistCollection
 }
 
-export type ArtistCollection = SpotifyArtistObject & {
+export type ArtistCollection = SpotifyAlbumArtistObject & {
   albums: SpotifyAlbumObject[]
 }
 

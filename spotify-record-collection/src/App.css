@@ -46,9 +46,6 @@ html .border-darker {
 }
 .coll .bg {
   content: "";
-  background-position: top left;
-  background-attachment: local;
-  background-size: 128px 128px;
   opacity: 0.03;
   top: 0;
   left: 0;
