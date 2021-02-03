@@ -1,4 +1,4 @@
-import { SpotifyAlbumObject } from "./spotifyApiTypes";
+import { SpotifyAlbumObject } from "../api/spotifyApiTypes";
 
 
 export function RecordCollectionAlbum(props: { album: SpotifyAlbumObject; }) {

@@ -1,9 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import Axios from 'axios'
 import { SpotifyContext } from "../api/SpotifyContext";
-import { processResponseAxios } from "../api/apiHelpers";
+import { getUserSavedAlbums } from "../api/spotifyApi";
 import { Loader } from "./Loader";
-import { GetAlbumsResponse, SpotifyAlbumObject } from "./spotifyApiTypes";
+import { GetAlbumsResponse, SpotifyAlbumObject } from "../api/spotifyApiTypes";
 import { ArtistCollection, ByArtistCollection, RecordCollection } from "./recordCollectionTypes";
 
 export function RecordCollectionLoader(props: { onLoadCompleted: (recordCollection: RecordCollection) => void }) {
@@ -15,36 +14,23 @@ export function RecordCollectionLoader(props: { onLoadCompleted: (recordCollecti
   const [errorMessage, setErrorMessage] = useState<string>();
   const [progress, setProgress] = useState<LoadProgress>({ total: 0, current: 0, percentage: 0 });
 
-
   useEffect(() => {
-    async function getAlbums(url: string, loadedAlbums: SpotifyAlbumObject[]) {
+    async function getAlbums(url: string | null, loadedAlbums: SpotifyAlbumObject[]) {
 
-      await Axios.get<GetAlbumsResponse>(url, {
-        headers: { 'Authorization': `Bearer ${contextData.authDetails?.access_token}` },
-        validateStatus: _ => true
-      })
-      .then(processResponseAxios)
-      .then(async (result) => {
-        console.log(result);
-        loadedAlbums.push(...result.data.items.map(i => i.album))
-        setProgress(parseProgress(result.data));
-        if (result.data.next)
-        {
-          await getAlbums(result.data.next, loadedAlbums); // recurse
-          return;
-        }
-        
-        onLoadCompleted(parseRecordCollection(loadedAlbums));
-      })
-      .catch(err => {
-        console.log(err);
-        if (err.status === 401) {
-          // TODO: Try to get new access token with refresh_token
-          contextData.authDetailsUpdated(undefined);
-        } else {
-          setErrorMessage(err.data)
-        }
-      });
+      await getUserSavedAlbums(url, contextData, 
+        async result => {
+          loadedAlbums.push(...result.items.map(i => i.album))
+          setProgress(parseProgress(result));
+          if (result.next)
+          {
+            await getAlbums(result.next, loadedAlbums); // recurse
+            return;
+          }          
+          onLoadCompleted(parseRecordCollection(loadedAlbums));
+        }, 
+        err =>{
+          setErrorMessage(err.data);
+        });
     }
     
     function parseRecordCollection(allAlbums: SpotifyAlbumObject[]) : RecordCollection {
@@ -73,7 +59,7 @@ export function RecordCollectionLoader(props: { onLoadCompleted: (recordCollecti
       return { current: current, total: response.total, percentage: perc };
     }
 
-    getAlbums("https://api.spotify.com/v1/me/albums?offset=0&limit=50", []);
+    getAlbums(null, []);
     return () => {}; // TODO: tidy up before unmount?    
   }, [contextData, contextData.authDetails?.access_token, onLoadCompleted]);
 

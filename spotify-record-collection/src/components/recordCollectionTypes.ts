@@ -1,4 +1,4 @@
-import { SpotifyAlbumObject, SpotifyArtistObject } from "./spotifyApiTypes";
+import { SpotifyAlbumObject, SpotifyArtistObject } from "../api/spotifyApiTypes";
 
 export type RecordCollection = {
   allAlbums: SpotifyAlbumObject[],
