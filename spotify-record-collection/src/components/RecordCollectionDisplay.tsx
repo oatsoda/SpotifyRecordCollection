@@ -31,7 +31,7 @@ export function RecordCollectionDisplay() {
       }
       { recordCollection &&
         <>
-          <p>Total Liked Albums: {recordCollection.allAlbums.length} | Liked Album Artists: {recordCollection.byArtist.size}</p>
+          <p>Total Liked Albums: {recordCollection.allAlbums.length} <span className="text-muted">|</span> Liked Album Artists: {recordCollection.byArtist.size}</p>
           <div className="accordion coll">
           { renderArtists(recordCollection.byArtist) }
           </div>
