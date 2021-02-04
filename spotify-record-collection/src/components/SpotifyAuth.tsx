@@ -91,7 +91,7 @@ export function SpotifyAuth() {
             <Alert color="danger">Failed to authenticate: {errorMessage}</Alert>
           }
           { !code &&          
-            <Button className="bg-spotify border-0 p-2 px-3" onClick={onStartAuthenticate}><img className="float-left" src="/img/Spotify_Icon_RGB_Black.png" alt="Spotify Logo" /> Authenticate with Spotify</Button>
+            <Button className="bg-spotify border-0 p-2 px-3" onClick={onStartAuthenticate}><img className="logo float-left" src="/img/Spotify_Icon_RGB_Black.png" alt="Spotify Logo" /> Authenticate with Spotify</Button>
           }
           </Col>
         </Row>

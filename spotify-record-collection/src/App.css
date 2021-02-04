@@ -61,7 +61,7 @@ html .border-darker {
 }
 
 /* TODO: Sort this out properly */
-.bg-spotify img {
+.bg-spotify .logo {
   max-width: 5%;
   padding: 0; margin: 0;
   margin-right: -5%;
