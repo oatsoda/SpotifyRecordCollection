@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useState } from "react";
-import { Button, Card, CardBody, CardHeader, Collapse, UncontrolledCollapse } from "reactstrap";
+import { Button, Card, CardBody, CardHeader, Collapse } from "reactstrap";
 import { ArtistCollection } from "./recordCollectionTypes";
 import { RecordCollectionArtistBadge } from "./RecordCollectionArtistBadge";
 import { RecordCollectionAlbum } from "./RecordCollectionAlbum";
