@@ -1,28 +1,40 @@
 import React, { useCallback, useContext, useState } from "react";
-import { Button, Card, CardBody, CardHeader, Collapse } from "reactstrap";
+import { Button, Card, CardBody, CardHeader, Col, Collapse, Row } from "reactstrap";
 import { ArtistCollection } from "./recordCollectionTypes";
 import { RecordCollectionArtistBadge } from "./RecordCollectionArtistBadge";
 import { RecordCollectionAlbum } from "./RecordCollectionAlbum";
 import { SpotifyAlbumObject, SpotifyArtistObject, SpotifyImageObject } from "../api/spotifyApiTypes";
 import { getArtist } from "../api/spotifyApi";
 import { SpotifyContext } from "../api/SpotifyContext";
+import { RecordCollectionAlbumDetails } from "./RecordCollectionAlbumDetails";
 
 export function RecordCollectionArtist(props: { artist: ArtistCollection; }) {
 
   const contextData = useContext(SpotifyContext);
 
   const { artist } = props;
-  const [fullArtist, setFullArtist] = useState<SpotifyArtistObject>();
-  
+
+  const [fullArtist, setFullArtist] = useState<SpotifyArtistObject>();  
   const [openState, setOpenState] = useState({ isOpen: false, isFirstOpen: true });
+  const [selectedAlbum, setSelectedAlbum] = useState<SpotifyAlbumObject>();  
 
   const toggle = () => setOpenState(prev => { return { isOpen: !prev.isOpen, isFirstOpen: false } });
   
-  const onExpand = useCallback(async () => {
+  const handleExpanded = useCallback(async () => {
     if (!fullArtist)
-      await getArtist(artist.href, contextData, (result) => { setFullArtist(result) }, (err) => {})
+      await getArtist(artist.href, contextData, (result) => { setFullArtist(result) }, _ => {})
 
   }, [artist.href, contextData, fullArtist]);
+  
+  const handleAlbumSelected = useCallback((a: SpotifyAlbumObject) => {
+    setSelectedAlbum(prev => {
+      if (prev?.id === a.id)
+        return undefined;
+      return a;
+    });
+  }, []);
+
+  const sortedAlbums = () => artist.albums.sort((a1, a2) => a1.release_date > a2.release_date ? 0 : -1);
 
   function getBackgroundImage(images: SpotifyImageObject[] | undefined) : React.CSSProperties {
     if (!images)
@@ -40,12 +52,12 @@ export function RecordCollectionArtist(props: { artist: ArtistCollection; }) {
     const url = images.sort((i1, i2) => i1.width > i2.width ? -1 : 0)[0].url;
     return { 
       backgroundImage: `url('${url}')`,  
-      backgroundPosition: "top 20% right",
-      backgroundRepeat: "no-repeat",
+      backgroundPosition: "top right",
+      backgroundRepeat: "repeat-y",
       backgroundSize: "100% auto",
       opacity: 0.1
      };
-  }
+  } 
 
   return (
     <Card className="bg-transparent border-darker">
@@ -53,24 +65,23 @@ export function RecordCollectionArtist(props: { artist: ArtistCollection; }) {
         <Button color="link" id={`tog${artist.id}`} onClick={toggle}>{artist.name}</Button>
         <RecordCollectionArtistBadge artist={artist} />
       </CardHeader>
-      <Collapse toggler={`#tog${artist.id}`} onEntered={onExpand} isOpen={openState.isOpen}>
-        <CardBody className="pr-0 pb-0">
-          <div className="d-flex flex-row flex-wrap">
-            <RecordCollectionArtistAlbums albums={artist.albums} hasBeenOpened={!openState.isFirstOpen} />
-          </div>
+      <Collapse toggler={`#tog${artist.id}`} onEntered={handleExpanded} isOpen={openState.isOpen}>
+        <CardBody className={selectedAlbum ? "" : "pr-0 pb-0"}>
+          <Row noGutters>
+            <Col>
+              <div className="d-flex flex-row flex-wrap">
+                {sortedAlbums().map(a => (<RecordCollectionAlbum album={a} key={a.id} 
+                                              hasBeenOpened={!openState.isFirstOpen}
+                                              onAlbumSelected={handleAlbumSelected} />))}
+              </div>
+            </Col>
+            { selectedAlbum  &&
+              <Col sm={5}><RecordCollectionAlbumDetails album={selectedAlbum} /></Col>
+            }
+          </Row>
           <div className="bg" style={getBackgroundImage(fullArtist?.images)}></div>
         </CardBody>
       </Collapse>
     </Card>
-  );
-}
-
-function RecordCollectionArtistAlbums(props: { albums: SpotifyAlbumObject[], hasBeenOpened: boolean }){
-  const sorted = props.albums.sort((a1, a2) => a1.release_date > a2.release_date ? 0 : -1);
-  
-  return (
-    <>
-      {sorted.map(a => (<RecordCollectionAlbum album={a} key={a.id} hasBeenOpened={props.hasBeenOpened} />))}
-    </>
   );
 }

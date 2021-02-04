@@ -23,7 +23,9 @@ html body {
   color: #fff;
 }
 
-html .border-darker {  
+html .border-darker,
+html .border-darker td,
+html .border-darker th {  
   border-color: #333 !important;
 }
 
@@ -32,12 +34,15 @@ html .border-darker {
   background-color: #1DB954 !important;
 }
 .text-spotify,
+html a,
+html a:hover,
 .coll .card-header button {
   color: #1DB954;
 }
 
 .coll .card-header:hover .text-spotify,
-.coll .card-header:hover button {  
+.coll .card-header:hover button,
+.table * {  
   color: #fff;
 }
 
@@ -67,12 +72,15 @@ html .border-darker {
   margin-right: -5%;
 }
 
+.bg-transparent-dark {
+  background-color: rgba(0, 0, 0, 0.2);
+}
 
 .alb {
   position: relative;
 }
 
-.alb a.hov {
+.alb .hov {
   display: block;
   height: 100%;
   width: 100%;
@@ -82,7 +90,7 @@ html .border-darker {
   background-color: black;
   color: #fff;
   text-decoration: none;
-  
+  border: 0;
   opacity: 0;
   position:absolute;
   top:0; 
@@ -90,9 +98,9 @@ html .border-darker {
 }
 
 .alb img,
-.alb a.hov {
+.alb .hov {
   transition: opacity 0.4s ease-in-out;
 }
 
 .alb:hover img {opacity:0.8;}
-.alb:hover a.hov {opacity:0.7;}
+.alb:hover .hov {opacity:0.7;}

@@ -8,7 +8,12 @@ export type SpotifyAlbumObject = {
   name: string,
   release_date: Date,
   images: SpotifyImageObject[],
-  artists: SpotifyAlbumArtistObject[]
+  artists: SpotifyAlbumArtistObject[],
+
+  release_date_precision: string,
+  popularity: number,
+  label: string,
+  tracks: PagingObject<SpotifyTrackObject>
 }
 
 export type SpotifyAlbumArtistObject = {
@@ -28,7 +33,6 @@ export type SpotifyExternalUrlsObject = {
   spotify: string
 }
 
-
 export type SpotifyUserObject = {
   display_name: string,
   external_urls: SpotifyExternalUrlsObject,
@@ -46,17 +50,29 @@ export type SpotifyFollowersObject = {
   total: number
 }
 
+export type SpotifyTrackObject = {
+  id: string,
+  href: string,
+  external_urls: SpotifyExternalUrlsObject,
+  name: string,
+  duration_ms: number,
+  disc_number: number,
+  track_number: string
+}
 
 /* Responses */
 
-export type GetAlbumsResponse = {
+export type PagingObject<T> = {
   limit : number,
   next : string,
   offset : number,
   previous : string,
   total : number
-  items: GetAlbumsResponseItem[]
+  items: T[]
 }
-export type GetAlbumsResponseItem = {
+
+export type GetAlbumsResponse = PagingObject<SavedAlbumObject>;
+
+export type SavedAlbumObject = {
   album : SpotifyAlbumObject
 }
