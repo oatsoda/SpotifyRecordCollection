@@ -1,6 +1,6 @@
 import { useCallback, useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Collapse, Nav, Navbar, NavbarBrand, NavbarText, NavbarToggler, NavItem, NavLink } from 'reactstrap';
+import { Collapse, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { SpotifyContext } from '../api/SpotifyContext';
 import { UserDisplay } from './UserDisplay';
 

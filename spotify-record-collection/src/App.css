@@ -46,13 +46,18 @@ html .border-darker {
 }
 .coll .bg {
   content: "";
-  opacity: 0.03;
+  opacity: 0;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
   position: absolute;
   z-index: -1;   
+
+  -webkit-transition: opacity 1.5s ease-in 300ms;
+  -moz-transition: opacity 1.5s ease-in 300ms;
+  -o-transition: opacity 1.5s ease-in 300ms;
+  transition: opacity 1.5s ease-in 300ms; 
 }
 
 /* TODO: Sort this out properly */

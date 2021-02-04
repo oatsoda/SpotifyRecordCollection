@@ -3,7 +3,7 @@ import { Button, Card, CardBody, CardHeader, UncontrolledCollapse } from "reacts
 import { ArtistCollection } from "./recordCollectionTypes";
 import { RecordCollectionArtistBadge } from "./RecordCollectionArtistBadge";
 import { RecordCollectionAlbum } from "./RecordCollectionAlbum";
-import { SpotifyAlbumObject, SpotifyArtistObject } from "../api/spotifyApiTypes";
+import { SpotifyAlbumObject, SpotifyArtistObject, SpotifyImageObject } from "../api/spotifyApiTypes";
 import { getArtist } from "../api/spotifyApi";
 import { SpotifyContext } from "../api/SpotifyContext";
 
@@ -20,16 +20,20 @@ export function RecordCollectionArtist(props: { artist: ArtistCollection; }) {
 
   }, [artist.href, contextData, fullArtist]);
 
-  function getBackgroundImage() : React.CSSProperties {
-    if (!fullArtist || fullArtist.images.length === 0)
+  function getBackgroundImage(images: SpotifyImageObject[] | undefined) : React.CSSProperties {
+    if (!images)
+      return {};
+
+    if (images.length === 0)
       return { 
         backgroundImage: "url('./img/Spotify_Icon_RGB_Green.png')",  
         backgroundPosition: "top left",
         backgroundAttachment: "local",
-        backgroundSize: "128px 128px"
+        backgroundSize: "128px 128px",
+        opacity: 0.02
        };
 
-    const url = fullArtist.images.sort((i1, i2) => i1.width > i2.width ? -1 : 0)[0].url;
+    const url = images.sort((i1, i2) => i1.width > i2.width ? -1 : 0)[0].url;
     return { 
       backgroundImage: `url('${url}')`,  
       backgroundPosition: "top 20% right",
@@ -50,7 +54,7 @@ export function RecordCollectionArtist(props: { artist: ArtistCollection; }) {
           <div className="d-flex flex-row flex-wrap">
             <RecordCollectionArtistAlbums albums={artist.albums} />  
           </div>
-          <div className="bg" style={getBackgroundImage()}></div>
+          <div className="bg" style={getBackgroundImage(fullArtist?.images)}></div>
         </CardBody>
       </UncontrolledCollapse>
     </Card>
