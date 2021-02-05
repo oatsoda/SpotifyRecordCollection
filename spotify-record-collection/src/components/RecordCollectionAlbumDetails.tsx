@@ -1,8 +1,8 @@
 import { Table } from "reactstrap";
 import { SpotifyAlbumObject } from "../api/spotifyApiTypes";
 
-export function RecordCollectionAlbumDetails(props: { album: SpotifyAlbumObject, onClose: () => void }) {
-  const { album, onClose } = props;
+export function RecordCollectionAlbumDetails(props: { album: SpotifyAlbumObject, useAppLinks: boolean, onClose: () => void }) {
+  const { album, useAppLinks, onClose } = props;
 
   function getDurationDisplay(duration_ms: number) {
     const secs = Math.floor((duration_ms / 1000) % 60);
@@ -15,7 +15,7 @@ export function RecordCollectionAlbumDetails(props: { album: SpotifyAlbumObject,
       <button type="button" className="close m-1 ml-3" aria-label="Close" onClick={onClose}>
           <span aria-hidden="true">&times;</span>
       </button>
-      <h5><a href={album.external_urls.spotify} rel="noreferrer" target="_blank" className="hov">{album.name}</a></h5>
+      <h5><a href={useAppLinks ? album.uri : album.external_urls.spotify} rel="noreferrer" target="_blank" className="hov">{album.name}</a></h5>
       <p className="text-muted">{album.release_date} on {album.label}</p>
       <Table className="text-spotify border-darker">
         <thead>
@@ -29,7 +29,7 @@ export function RecordCollectionAlbumDetails(props: { album: SpotifyAlbumObject,
           { album.tracks.items.map(t => (
             <tr>
               <th scope="row">{t.track_number}</th>
-              <td><a href={t.uri} rel="noreferrer" target="_blank" className="hov">{t.name}</a></td>
+              <td><a href={useAppLinks ? album.uri : t.uri} rel="noreferrer" target="_blank" className="hov">{t.name}</a></td>
               <td>{getDurationDisplay(t.duration_ms)}</td>
             </tr>)
             )}

@@ -8,11 +8,11 @@ import { getArtist } from "../api/spotifyApi";
 import { SpotifyContext } from "../api/SpotifyContext";
 import { RecordCollectionAlbumDetails } from "./RecordCollectionAlbumDetails";
 
-export function RecordCollectionArtist(props: { artist: ArtistCollection; }) {
+export function RecordCollectionArtist(props: { artist: ArtistCollection, useAppLinks: boolean }) {
 
   const contextData = useContext(SpotifyContext);
 
-  const { artist } = props;
+  const { artist, useAppLinks } = props;
 
   const [fullArtist, setFullArtist] = useState<SpotifyArtistObject>();  
   const [openState, setOpenState] = useState({ isOpen: false, isFirstOpen: true });
@@ -72,7 +72,7 @@ export function RecordCollectionArtist(props: { artist: ArtistCollection; }) {
               </div>
             </Col>
             { selectedAlbum  &&
-              <Col sm={5}><RecordCollectionAlbumDetails album={selectedAlbum} onClose={() => handleAlbumSelected(undefined) }/></Col>
+              <Col sm={5}><RecordCollectionAlbumDetails album={selectedAlbum} useAppLinks={useAppLinks} onClose={() => handleAlbumSelected(undefined) }/></Col>
             }
           </Row>
           <div className="bg" style={getBackgroundImage(fullArtist?.images)}></div>
