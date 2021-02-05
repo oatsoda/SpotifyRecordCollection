@@ -17,6 +17,9 @@
 .spinners div {
   margin-left: 0.5em;
 }
+.coll .close {
+  text-shadow: none;
+}
 
 html body {
   background-color: #191414;
@@ -36,12 +39,14 @@ html .border-darker th {
 .text-spotify,
 html a,
 html a:hover,
-.coll .card-header button {
+.coll .card-header button,
+.coll .close:hover {
   color: #1DB954;
 }
 
 .coll .card-header:hover .text-spotify,
 .coll .card-header:hover button,
+.coll .close,
 .table * {  
   color: #fff;
 }

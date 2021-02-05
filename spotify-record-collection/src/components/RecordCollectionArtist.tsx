@@ -26,9 +26,9 @@ export function RecordCollectionArtist(props: { artist: ArtistCollection; }) {
 
   }, [artist.href, contextData, fullArtist]);
   
-  const handleAlbumSelected = useCallback((a: SpotifyAlbumObject) => {
+  const handleAlbumSelected = useCallback((a: SpotifyAlbumObject | undefined) => {
     setSelectedAlbum(prev => {
-      if (prev?.id === a.id)
+      if (prev?.id === a?.id)
         return undefined;
       return a;
     });
@@ -76,7 +76,7 @@ export function RecordCollectionArtist(props: { artist: ArtistCollection; }) {
               </div>
             </Col>
             { selectedAlbum  &&
-              <Col sm={5}><RecordCollectionAlbumDetails album={selectedAlbum} /></Col>
+              <Col sm={5}><RecordCollectionAlbumDetails album={selectedAlbum} onClose={() => handleAlbumSelected(undefined) }/></Col>
             }
           </Row>
           <div className="bg" style={getBackgroundImage(fullArtist?.images)}></div>

@@ -4,6 +4,7 @@ export type SpotifyAlbumObject = {
   album_type: "album" | "single" | "compilation",
   id: string,
   href: string,
+  uri: string,
   external_urls: SpotifyExternalUrlsObject,
   name: string,
   release_date: Date,
@@ -20,6 +21,7 @@ export type SpotifyAlbumArtistObject = {
   name: string,
   id: string,
   href: string,
+  uri: string,
   external_urls: SpotifyExternalUrlsObject
 }
 
@@ -57,7 +59,8 @@ export type SpotifyTrackObject = {
   name: string,
   duration_ms: number,
   disc_number: number,
-  track_number: string
+  track_number: string,
+  uri: string
 }
 
 /* Responses */
