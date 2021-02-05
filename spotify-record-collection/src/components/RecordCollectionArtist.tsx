@@ -27,11 +27,7 @@ export function RecordCollectionArtist(props: { artist: ArtistCollection; }) {
   }, [artist.href, contextData, fullArtist]);
   
   const handleAlbumSelected = useCallback((a: SpotifyAlbumObject | undefined) => {
-    setSelectedAlbum(prev => {
-      if (prev?.id === a?.id)
-        return undefined;
-      return a;
-    });
+    setSelectedAlbum(a);
   }, []);
 
   const sortedAlbums = () => artist.albums.sort((a1, a2) => a1.release_date > a2.release_date ? 0 : -1);
