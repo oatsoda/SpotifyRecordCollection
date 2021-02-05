@@ -4,6 +4,12 @@ import { SpotifyAlbumObject } from "../api/spotifyApiTypes";
 export function RecordCollectionAlbumDetails(props: { album: SpotifyAlbumObject, onClose: () => void }) {
   const { album, onClose } = props;
 
+  function getDurationDisplay(duration_ms: number) {
+    const secs = Math.floor((duration_ms / 1000) % 60);
+    const mins = Math.floor((duration_ms / (1000 * 60)) % 60);
+    return `${mins}:${secs < 10 ? "0" + secs : secs}`;
+  }
+
   return (
     <div className="px-2 py-1 bg-transparent-dark h-100">
       <button type="button" className="close m-1 ml-3" aria-label="Close" onClick={onClose}>
@@ -15,8 +21,8 @@ export function RecordCollectionAlbumDetails(props: { album: SpotifyAlbumObject,
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col" className="w-75">Track</th>
-            <th scope="col" className="w-25">Duration</th>
+            <th scope="col" className="col-10">Track</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
@@ -24,7 +30,7 @@ export function RecordCollectionAlbumDetails(props: { album: SpotifyAlbumObject,
             <tr>
               <th scope="row">{t.track_number}</th>
               <td><a href={t.uri} rel="noreferrer" target="_blank" className="hov">{t.name}</a></td>
-              <td>{t.duration_ms / 1000}s</td>
+              <td>{getDurationDisplay(t.duration_ms)}</td>
             </tr>)
             )}
         </tbody>
