@@ -29,7 +29,7 @@ export function RecordCollectionAlbumDetails(props: { album: SpotifyAlbumObject,
           { album.tracks.items.map(t => (
             <tr>
               <th scope="row">{t.track_number}</th>
-              <td><a href={useAppLinks ? album.uri : t.uri} rel="noreferrer" target="_blank" className="hov">{t.name}</a></td>
+              <td><a href={useAppLinks ? t.uri : t.external_urls.spotify} rel="noreferrer" target="_blank" className="hov">{t.name}</a></td>
               <td>{getDurationDisplay(t.duration_ms)}</td>
             </tr>)
             )}
