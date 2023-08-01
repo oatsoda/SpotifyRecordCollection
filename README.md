@@ -1,5 +1,9 @@
 # SpotifyRecordCollection
 
+Browse albums that you've liked on Spotify.
+
+[Live URL](https://livespotifyrecordcoll.z33.web.core.windows.net/)
+
 TODO
 
 - Add grouping/sorting?  By artist, by popularity?
