@@ -1,8 +1,7 @@
 import { Container } from 'reactstrap';
+import packageJson from '../package.json';
 
 export function Layout(props: { children: React.ReactNode }) {
-
-  let packageJson = require('../package.json');
 
   return (
     <div className="d-flex flex-column min-vh-100">
