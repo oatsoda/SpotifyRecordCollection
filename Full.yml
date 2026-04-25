@@ -52,7 +52,7 @@ stages:
           - task: PublishBuildArtifacts@1
             displayName: "Upload ClientApp"
             inputs:
-              PathtoPublish: "$(Build.SourcesDirectory)/$(clientAppPath)/build/"
+              PathtoPublish: "$(Build.SourcesDirectory)/$(clientAppPath)/dist/"
               ArtifactName: "ClientApp"
               publishLocation: "Container"
           - task: PublishBuildArtifacts@1
