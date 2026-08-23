@@ -1,138 +1,137 @@
 name: 1.0$(rev:.r)
 
 # change back to "trigger: none" when not doing Cont Deploy
-trigger: 
-  branches: 
+trigger:
+  branches:
     include:
-    - main
+      - main
   paths:
     exclude:
-    - .gitignore
-    - CI.yaml
-    - README.md
+      - .gitignore
+      - CI.yaml
+      - README.md
 
 # no PR triggers
 pr: none
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: "windows-latest"
 
 variables:
-  clientAppPath: 'spotify-record-collection'
+  clientAppPath: "spotify-record-collection"
 
 stages:
-- stage: Build
-  displayName: Build
-  jobs:
-  - job: BuildClient
-    steps:
-    - task: NodeTool@0
-      displayName: 'Ensure Node Installed'
-      inputs:
-        versionSpec: '12.x'
-    - task: Npm@1
-      displayName: 'Install ClientApp packages'
-      inputs:
-        command: 'install'
-        workingDir: $(clientAppPath)
-    - task: PowerShell@2
-      displayName: 'Update package.json version'
-      inputs:
-        filePath: '$(Build.SourcesDirectory)/$(clientAppPath)/SetPackageVersion.ps1'
-        arguments: '-filePath $(Build.SourcesDirectory)/$(clientAppPath)/package.json -version $(Build.BuildNumber)'
-        failOnStderr: true
-        showWarnings: true
-        pwsh: true
-    - task: Npm@1
-      displayName: 'Build ClientApp'
-      inputs:
-        command: 'custom'
-        workingDir: $(clientAppPath)
-        customCommand: 'run build'  
-    - task: PublishBuildArtifacts@1
-      displayName: 'Upload ClientApp'
-      inputs:
-        PathtoPublish: '$(Build.SourcesDirectory)/$(clientAppPath)/build/'
-        ArtifactName: 'ClientApp'
-        publishLocation: 'Container'
-    - task: PublishBuildArtifacts@1
-      displayName: 'Upload Deployment'
-      inputs:
-        PathtoPublish: '$(Build.SourcesDirectory)/SpotifyRecordCollection.Deployment'
-        ArtifactName: 'Deployment'
-        publishLocation: 'Container'
+  - stage: Build
+    displayName: Build
+    jobs:
+      - job: BuildClient
+        steps:
+          - task: NodeTool@0
+            displayName: "Ensure Node Installed"
+            inputs:
+              versionSpec: "24.x"
+          - task: Npm@1
+            displayName: "Install ClientApp packages"
+            inputs:
+              command: "install"
+              workingDir: $(clientAppPath)
+          - task: PowerShell@2
+            displayName: "Update package.json version"
+            inputs:
+              filePath: "$(Build.SourcesDirectory)/$(clientAppPath)/SetPackageVersion.ps1"
+              arguments: "-filePath $(Build.SourcesDirectory)/$(clientAppPath)/package.json -version $(Build.BuildNumber)"
+              failOnStderr: true
+              showWarnings: true
+              pwsh: true
+          - task: Npm@1
+            displayName: "Build ClientApp"
+            inputs:
+              command: "custom"
+              workingDir: $(clientAppPath)
+              customCommand: "run build"
+          - task: PublishBuildArtifacts@1
+            displayName: "Upload ClientApp"
+            inputs:
+              PathtoPublish: "$(Build.SourcesDirectory)/$(clientAppPath)/dist/"
+              ArtifactName: "ClientApp"
+              publishLocation: "Container"
+          - task: PublishBuildArtifacts@1
+            displayName: "Upload Deployment"
+            inputs:
+              PathtoPublish: "$(Build.SourcesDirectory)/SpotifyRecordCollection.Deployment"
+              ArtifactName: "Deployment"
+              publishLocation: "Container"
 
-- stage: DeployInfrastructure
-  displayName: Deploy Infrastructure
-  jobs:
-    # Track deployments on the environment.
-  - deployment: DeployInfrastructure
+  - stage: DeployInfrastructure
     displayName: Deploy Infrastructure
-        
-    condition: and(succeeded(), ne(variables['skipInfrastructure'], 'true'))
+    jobs:
+      # Track deployments on the environment.
+      - deployment: DeployInfrastructure
+        displayName: Deploy Infrastructure
 
-    # Creates an environment if it doesn't exist.
-    environment: 'Live'
-    strategy:
-      # Default deployment strategy, more coming...
-      runOnce:
-        deploy:
-          steps:
-          - checkout: none
-          - download: none
+        condition: and(succeeded(), ne(variables['skipInfrastructure'], 'true'))
 
-          - task: DownloadBuildArtifacts@0
-            displayName: 'Download Deployment'
-            inputs:
-              buildType: 'current'
-              downloadType: 'single'
-              artifactName: 'Deployment'
-              downloadPath: '$(System.ArtifactsDirectory)'
-              
-          - task: AzureResourceManagerTemplateDeployment@3
-            displayName: 'Deploy Storage Account'
-            inputs:
-              deploymentScope: 'Resource Group'
-              azureResourceManagerConnection: 'Pay-As-You-Go(f2eec27e-505b-41ff-87a8-b38999936e14)'
-              subscriptionId: 'f2eec27e-505b-41ff-87a8-b38999936e14'
-              action: 'Create Or Update Resource Group'
-              resourceGroupName: 'LiveSpotifyRecordCollection'
-              location: 'UK South'
-              templateLocation: 'Linked artifact'
-              csmFile: '$(System.ArtifactsDirectory)\Deployment\Templates\StorageAccount.Template.json'
-              csmParametersFile: '$(System.ArtifactsDirectory)\Deployment\StorageAccount.Live.json'
-              deploymentMode: 'Incremental'
+        # Creates an environment if it doesn't exist.
+        environment: "Live"
+        strategy:
+          # Default deployment strategy, more coming...
+          runOnce:
+            deploy:
+              steps:
+                - checkout: none
+                - download: none
 
-- stage: DeployWeb
-  displayName: Deploy Web App
-  jobs:
+                - task: DownloadBuildArtifacts@0
+                  displayName: "Download Deployment"
+                  inputs:
+                    buildType: "current"
+                    downloadType: "single"
+                    artifactName: "Deployment"
+                    downloadPath: "$(System.ArtifactsDirectory)"
 
-    # Track deployments on the environment.
-  - deployment: DeployWeb
+                - task: AzureResourceManagerTemplateDeployment@3
+                  displayName: "Deploy Storage Account"
+                  inputs:
+                    deploymentScope: "Resource Group"
+                    azureResourceManagerConnection: "Pay-As-You-Go(f2eec27e-505b-41ff-87a8-b38999936e14)"
+                    subscriptionId: "f2eec27e-505b-41ff-87a8-b38999936e14"
+                    action: "Create Or Update Resource Group"
+                    resourceGroupName: "LiveSpotifyRecordCollection"
+                    location: "UK South"
+                    templateLocation: "Linked artifact"
+                    csmFile: '$(System.ArtifactsDirectory)\Deployment\Templates\StorageAccount.Template.json'
+                    csmParametersFile: '$(System.ArtifactsDirectory)\Deployment\StorageAccount.Live.json'
+                    deploymentMode: "Incremental"
+
+  - stage: DeployWeb
     displayName: Deploy Web App
-    # Creates an environment if it doesn't exist.
-    environment: 'Live'
-    strategy:
-      # Default deployment strategy, more coming...
-      runOnce:
-        deploy:
-          steps:
-          - checkout: none 
-          - download: none
+    jobs:
+      # Track deployments on the environment.
+      - deployment: DeployWeb
+        displayName: Deploy Web App
+        # Creates an environment if it doesn't exist.
+        environment: "Live"
+        strategy:
+          # Default deployment strategy, more coming...
+          runOnce:
+            deploy:
+              steps:
+                - checkout: none
+                - download: none
 
-          - task: DownloadBuildArtifacts@0
-            displayName: 'Download ClientApp'
-            inputs:
-              buildType: 'current'
-              downloadType: 'single'
-              artifactName: 'ClientApp'
-              downloadPath: '$(System.ArtifactsDirectory)'
+                - task: DownloadBuildArtifacts@0
+                  displayName: "Download ClientApp"
+                  inputs:
+                    buildType: "current"
+                    downloadType: "single"
+                    artifactName: "ClientApp"
+                    downloadPath: "$(System.ArtifactsDirectory)"
 
-          # Remember to add Storage Blob Data Contributor/Owner role to the Service Principal in Azure Portal (Subscriptions > Access Control)
-          - task: AzureFileCopy@4
-            inputs:
-              SourcePath: '$(System.ArtifactsDirectory)/ClientApp/*' # *ensures parent ClientApp folder not copied.
-              azureSubscription: 'Pay-As-You-Go(f2eec27e-505b-41ff-87a8-b38999936e14)'
-              Destination: 'AzureBlob'
-              storage: 'livespotifyrecordcoll'
-              ContainerName: '$web'
+                # Remember to add Storage Blob Data Contributor/Owner role to the Service Principal in Azure Portal (Subscriptions > Access Control)
+                - task: AzureFileCopy@4
+                  inputs:
+                    SourcePath: "$(System.ArtifactsDirectory)/ClientApp/*" # *ensures parent ClientApp folder not copied.
+                    azureSubscription: "Pay-As-You-Go(f2eec27e-505b-41ff-87a8-b38999936e14)"
+                    Destination: "AzureBlob"
+                    storage: "livespotifyrecordcoll"
+                    ContainerName: "$web"

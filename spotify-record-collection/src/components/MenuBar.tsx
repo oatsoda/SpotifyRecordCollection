@@ -19,11 +19,11 @@ export function MenuBar() {
   return (
     <Navbar dark expand="md" className="bg-spotify mb-3">
       <NavbarBrand tag={Link} to="/" className="pb-0">
-        <img src="/img/Spotify_Icon_RGB_Black.png" width="40px" className="pb-1 mr-1" alt="" /> Spotify Record Collection
+        <img src="/img/Spotify_Icon_RGB_Black.png" width="40px" className="pb-1 me-1" alt="" /> Spotify Record Collection
       </NavbarBrand>
-      <NavbarToggler onClick={toggleNavbar} className="mr-2" />
+      <NavbarToggler onClick={toggleNavbar} className="me-2" />
       <Collapse isOpen={!collapsed} navbar>
-        <Nav className="ml-auto" navbar>
+        <Nav className="ms-auto" navbar>
           { contextData.authDetails && 
             <UserDisplay />
           }

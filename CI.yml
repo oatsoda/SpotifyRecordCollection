@@ -11,29 +11,29 @@ trigger: none
 #    - README.md
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: "windows-latest"
 
 variables:
-  clientAppPath: 'spotify-record-collection'
+  clientAppPath: "spotify-record-collection"
 
 stages:
-- stage: Build
-  displayName: Build
-  jobs:
-  - job: ClientApp
-    steps:
-    - task: NodeTool@0
-      displayName: 'Ensure Node Installed'
-      inputs:
-        versionSpec: '12.x'
-    - task: Npm@1
-      displayName: 'Install ClientApp packages'
-      inputs:
-        command: 'install'
-        workingDir: $(clientAppPath)        
-    - task: Npm@1
-      displayName: 'Build ClientApp'
-      inputs:
-        command: 'custom'
-        workingDir: $(clientAppPath)
-        customCommand: 'run build'
+  - stage: Build
+    displayName: Build
+    jobs:
+      - job: ClientApp
+        steps:
+          - task: NodeTool@0
+            displayName: "Ensure Node Installed"
+            inputs:
+              versionSpec: "24.x"
+          - task: Npm@1
+            displayName: "Install ClientApp packages"
+            inputs:
+              command: "install"
+              workingDir: $(clientAppPath)
+          - task: Npm@1
+            displayName: "Build ClientApp"
+            inputs:
+              command: "custom"
+              workingDir: $(clientAppPath)
+              customCommand: "run build"

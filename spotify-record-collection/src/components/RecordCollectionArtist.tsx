@@ -62,8 +62,8 @@ export function RecordCollectionArtist(props: { artist: ArtistCollection, useApp
         <RecordCollectionArtistBadge artist={artist} />
       </CardHeader>
       <Collapse toggler={`#tog${artist.id}`} onEntered={handleExpanded} isOpen={openState.isOpen}>
-        <CardBody className={selectedAlbum ? "" : "pr-0 pb-0"}>
-          <Row noGutters>
+        <CardBody className={selectedAlbum ? "" : "pe-0 pb-0"}>
+          <Row className="g-0">
             <Col>
               <div className="d-flex flex-row flex-wrap">
                 {sortedAlbums().map(a => (<RecordCollectionAlbum album={a} key={a.id} 

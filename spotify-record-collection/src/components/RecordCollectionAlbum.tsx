@@ -35,7 +35,7 @@ export function RecordCollectionAlbum(props: { album: SpotifyAlbumObject, hasBee
   }, [album, onAlbumSelected]);
 
   return (
-    <div className="alb mr-3 mb-3" style={ { width: width, height: width } }>      
+    <div className="alb me-3 mb-3" style={ { width: width, height: width } }>      
       <img src={getImageUrl()} width="100%" alt={album.name} />
       <button onClick={handleClick} className="hov">{album.name}</button>
     </div>

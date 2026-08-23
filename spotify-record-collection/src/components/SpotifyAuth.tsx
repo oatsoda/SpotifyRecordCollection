@@ -2,7 +2,7 @@ import cryptoRandomString from 'crypto-random-string';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import Axios, { AxiosRequestConfig } from 'axios';
 import { ProcessedResponse, processResponseAxios } from '../api/apiHelpers';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router';
 import { SpotifyContext } from '../api/SpotifyContext';
 import { Alert, Button, Col, Container, Row } from 'reactstrap';
 
@@ -18,7 +18,7 @@ const callbackRedirect = window.location.origin + '/';
 
 export function SpotifyAuth() {
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const contextData = useContext(SpotifyContext);
 
   const [errorMessage, setErrorMessage] = useState<string>();
@@ -46,7 +46,7 @@ export function SpotifyAuth() {
 
     function success(data: SpotifyAuthDetails) {
       contextData.authDetailsUpdated(data);      
-      history.push('/');
+      navigate('/');
     }
 
     function failure(err: ProcessedResponse) {
@@ -65,7 +65,7 @@ export function SpotifyAuth() {
     // Exchange code for Access Token
     postExchangeCode(exchangeCodeUrl, code, codeVerifier, success, failure); 
 
-  }, [code, state, error, setErrorMessage, contextData, history]);
+  }, [code, state, error, setErrorMessage, contextData, navigate]);
 
   const onStartAuthenticate = useCallback(async () => {
 
@@ -84,14 +84,14 @@ export function SpotifyAuth() {
 
   return (    
       <Container>
-        <Row className="justify-content-center">
+        <Row className="g-0 justify-content-center">
           <Col md={6} className="border border-darker rounded text-center p-3">
             <p>You need to login to your Spotify account and give permission for us to read your Library.</p>
           { errorMessage && 
             <Alert color="danger">Failed to authenticate: {errorMessage}</Alert>
           }
           { !code &&          
-            <Button className="bg-spotify border-0 p-2 px-3" onClick={onStartAuthenticate}><img className="logo float-left" src="/img/Spotify_Icon_RGB_Black.png" alt="Spotify Logo" /> Authenticate with Spotify</Button>
+            <Button className="bg-spotify border-0 p-2 px-3 d-flex align-items-center w-100" onClick={onStartAuthenticate}><img className="logo me-2" src="/img/Spotify_Icon_RGB_Black.png" alt="Spotify Logo" /><span className="flex-grow-1 text-center">Authenticate with Spotify</span></Button>
           }
           </Col>
         </Row>

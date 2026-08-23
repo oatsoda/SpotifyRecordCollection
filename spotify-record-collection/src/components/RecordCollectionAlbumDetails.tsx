@@ -12,11 +12,9 @@ export function RecordCollectionAlbumDetails(props: { album: SpotifyAlbumObject,
 
   return (
     <div className="px-2 py-1 bg-transparent-dark h-100">
-      <button type="button" className="close m-1 ml-3" aria-label="Close" onClick={onClose}>
-          <span aria-hidden="true">&times;</span>
-      </button>
+      <button type="button" className="btn-close btn-close-white m-1 ms-3" aria-label="Close" onClick={onClose}></button>
       <h5><a href={useAppLinks ? album.uri : album.external_urls.spotify} rel="noreferrer" target="_blank" className="hov">{album.name}</a></h5>
-      <p className="text-muted">{album.release_date} on {album.label}</p>
+      <p className="text-muted">{album.release_date.toLocaleDateString()} on {album.label}</p>
       <Table className="text-spotify border-darker">
         <thead>
           <tr>

@@ -17,7 +17,7 @@
 .spinners div {
   margin-left: 0.5em;
 }
-.coll .close {
+.coll .btn-close {
   text-shadow: none;
 }
 
@@ -40,14 +40,14 @@ html .border-darker th {
 html a,
 html a:hover,
 .coll .card-header button,
-.coll .close:hover {
+.coll .btn-close:hover {
   color: #1DB954;
 }
 
 .coll .card-header:hover .text-spotify,
 .coll .card-header:hover button,
-.coll .close,
-.table * {  
+.coll .btn-close,
+.table * {
   color: #fff;
 }
 
@@ -70,11 +70,9 @@ html a:hover,
   transition: opacity 1.5s ease-in 300ms; 
 }
 
-/* TODO: Sort this out properly */
 .bg-spotify .logo {
-  max-width: 5%;
-  padding: 0; margin: 0;
-  margin-right: -5%;
+  height: 1.5em;
+  width: auto;
 }
 
 .bg-transparent-dark {

@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import './index.css';
 import App from './App';
@@ -7,15 +7,14 @@ import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href') ?? undefined;
-const rootElement = document.getElementById('root');
+const rootElement = document.getElementById('root')!;
 
-ReactDOM.render(
+ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <BrowserRouter basename={baseUrl}>
       <App />
     </BrowserRouter>
-  </React.StrictMode>,
-  rootElement
+  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
